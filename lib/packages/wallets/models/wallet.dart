@@ -46,7 +46,7 @@ class Wallet extends HiveObject {
     this.profileImage,
   });
 
-  legacy.Wallet toLegacy() => legacy.Wallet(
+  legacy.LegacyWallet toLegacy() => legacy.LegacyWallet(
         name: name,
         id: walletId,
       );

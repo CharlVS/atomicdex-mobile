@@ -117,8 +117,9 @@ class _LockScreenState extends State<LockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authenticatedWallet = context.select<AuthenticationBloc, Wallet?>(
-        (bloc) => bloc.state.wallet?.toLegacy());
+    final authenticatedWallet =
+        context.select<AuthenticationBloc, LegacyWallet?>(
+            (bloc) => bloc.state.wallet?.toLegacy());
 
     final accountBlocState = context.watch<ActiveAccountBloc>().state;
 

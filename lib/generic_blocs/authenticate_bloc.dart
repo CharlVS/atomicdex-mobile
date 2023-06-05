@@ -101,7 +101,7 @@ class AuthenticateBloc extends GenericBlocBase {
   }
 
   Future<void> _checkPINStatus(String? password) async {
-    final Wallet? wallet = await Db.getCurrentWallet();
+    final LegacyWallet? wallet = await Db.getCurrentWallet();
     final EncryptionTool entryptionTool = EncryptionTool();
 
     String? pin, camoPin;

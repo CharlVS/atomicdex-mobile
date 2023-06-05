@@ -12,16 +12,16 @@ import '../widgets/bloc_provider.dart';
 WalletBloc walletBloc = WalletBloc();
 
 class WalletBloc implements GenericBlocBase {
-  List<Wallet> wallets = <Wallet>[];
+  List<LegacyWallet> wallets = <LegacyWallet>[];
 
-  Wallet? currentWallet;
+  LegacyWallet? currentWallet;
 
   @override
   void dispose() {
     //
   }
 
-  Future<List<Wallet>> getWalletsSaved() async {
+  Future<List<LegacyWallet>> getWalletsSaved() async {
     pauseUntil(() => LegacyDatabaseAdapter.maybeInstance != null);
 
     final wallets = await LegacyDatabaseAdapter.maybeInstance!.listWallets();
@@ -29,11 +29,11 @@ class WalletBloc implements GenericBlocBase {
     return this.wallets;
   }
 
-  void setCurrentWallet(Wallet? wallet) {
+  void setCurrentWallet(LegacyWallet? wallet) {
     currentWallet = wallet;
   }
 
-  Future<void> deleteWallet(Wallet wallet) async {
+  Future<void> deleteWallet(LegacyWallet wallet) async {
     throw UnimplementedError(
       'TODO: Implement wallet deletion in refactored'
       'bloc(s)code',
@@ -42,7 +42,7 @@ class WalletBloc implements GenericBlocBase {
     authBloc.logout();
   }
 
-  Future<void> deleteSeedPhrase(String? password, Wallet wallet) async {
+  Future<void> deleteSeedPhrase(String? password, LegacyWallet wallet) async {
     final EncryptionTool entryptionTool = EncryptionTool();
     await entryptionTool.deleteData(KeyEncryption.SEED, wallet, password);
     await entryptionTool.deleteData(KeyEncryption.PIN, wallet, password);

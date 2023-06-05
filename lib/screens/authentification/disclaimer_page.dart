@@ -219,7 +219,7 @@ class _DisclaimerPageState extends State<DisclaimerPage>
       });
 
       final EncryptionTool encryptionTool = EncryptionTool();
-      final Wallet wallet = walletBloc.currentWallet!;
+      final LegacyWallet wallet = walletBloc.currentWallet!;
       walletBloc.currentWallet = wallet;
 
       await encryptionTool

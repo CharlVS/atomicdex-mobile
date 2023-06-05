@@ -322,7 +322,7 @@ class Db {
     await db.rawDelete('DELETE FROM ArticlesSaved');
   }
 
-  static Future<int> saveWallet(Wallet newWallet,
+  static Future<int> saveWallet(LegacyWallet newWallet,
       [WalletSecuritySettings? walletSecuritySettings]) async {
     final Database db = await Db.db;
 
@@ -346,7 +346,7 @@ class Db {
     return await db.insert('Wallet ', row);
   }
 
-  static Future<List<Wallet>> getAllWallet() async {
+  static Future<List<LegacyWallet>> getAllWallet() async {
     return await LegacyDatabaseAdapter.maybeInstance!.listWallets();
   }
 
@@ -355,13 +355,13 @@ class Db {
     await db.rawDelete('DELETE FROM Wallet');
   }
 
-  static Future<void> deleteWallet(Wallet wallet) async {
+  static Future<void> deleteWallet(LegacyWallet wallet) async {
     Log('database:173', 'deleteWallet] id: ${wallet.id}');
     final Database db = await Db.db;
     await db.delete('Wallet', where: 'id = ?', whereArgs: <dynamic>[wallet.id]);
   }
 
-  static Future<int> saveCurrentWallet(Wallet currentWallet,
+  static Future<int> saveCurrentWallet(LegacyWallet currentWallet,
       [WalletSecuritySettings? walletSecuritySettings]) async {
     await deleteCurrentWallet();
     walletBloc.setCurrentWallet(currentWallet);
@@ -387,15 +387,16 @@ class Db {
     return await db.insert('CurrentWallet ', row);
   }
 
-  static Future<Wallet?> getCurrentWallet() async {
+  static Future<LegacyWallet?> getCurrentWallet() async {
     return await LegacyDatabaseAdapter.maybeInstance
         ?.tryGetAuthenticatedWallet();
     final Database db = await Db.db;
 
     final List<Map<String, dynamic>> maps = await db.query('CurrentWallet');
 
-    final List<Wallet> wallets = List<Wallet>.generate(maps.length, (int i) {
-      return Wallet(
+    final List<LegacyWallet> wallets =
+        List<LegacyWallet>.generate(maps.length, (int i) {
+      return LegacyWallet(
         id: maps[i]['id'],
         name: maps[i]['name'],
       );
@@ -420,7 +421,7 @@ class Db {
 
   static Future<List<String>> getCoinsFromDb() async {
     final Database db = await Db.db;
-    Wallet? wallet = await getCurrentWallet();
+    LegacyWallet? wallet = await getCurrentWallet();
 
     await pauseUntil(() async {
       wallet ??= await getCurrentWallet();
@@ -585,7 +586,7 @@ class Db {
   }
 
   static Future<void> saveWalletSnapshot(String jsonStr) async {
-    final Wallet? wallet = await getCurrentWallet();
+    final LegacyWallet? wallet = await getCurrentWallet();
     if (wallet == null) return;
 
     final Database db = await Db.db;
@@ -597,7 +598,7 @@ class Db {
   }
 
   static Future<String?> getWalletSnapshot() async {
-    final Wallet? wallet = await getCurrentWallet();
+    final LegacyWallet? wallet = await getCurrentWallet();
     if (wallet == null) return null;
 
     final Database db = await Db.db;
@@ -644,7 +645,7 @@ class Db {
   }
 
   static Future<WalletSecuritySettings?> getWalletSecuritySettings(
-      Wallet wallet) async {
+      LegacyWallet wallet) async {
     final Database db = await Db.db;
 
     final List<Map<String, dynamic>> maps = await db.query(
@@ -680,7 +681,7 @@ class Db {
       {bool allWallets = false}) async {
     final Database db = await Db.db;
 
-    Wallet? currentWallet = await getCurrentWallet();
+    LegacyWallet? currentWallet = await getCurrentWallet();
 
     final batch = db.batch();
 

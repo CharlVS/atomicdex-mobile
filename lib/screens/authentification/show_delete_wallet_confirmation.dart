@@ -7,7 +7,7 @@ import '../../generic_blocs/dialog_bloc.dart';
 import '../../widgets/custom_simple_dialog.dart';
 
 Future<void> showDeleteWalletConfirmation(BuildContext context,
-    {Wallet? wallet, String? password}) async {
+    {LegacyWallet? wallet, String? password}) async {
   wallet ??= walletBloc.currentWallet!;
 
   dialogBloc.dialog = showDialog<dynamic>(

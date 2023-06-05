@@ -52,14 +52,14 @@ class LegacyDatabaseAdapter {
 
   static LegacyDatabaseAdapter? get maybeInstance => _instance;
 
-  Future<legacy.Wallet?> tryGetAuthenticatedWallet() async {
+  Future<legacy.LegacyWallet?> tryGetAuthenticatedWallet() async {
     var wallet = await getAuthenticatedWallet();
     var account = await getActiveAccount();
 
     return account?.asLegacyWallet();
   }
 
-  Future<legacy.Wallet?> getAuthenticatedWallet() async {
+  Future<legacy.LegacyWallet?> getAuthenticatedWallet() async {
     return (await _authenticationRepository.tryGetWallet())?.toLegacy();
   }
 
@@ -67,7 +67,7 @@ class LegacyDatabaseAdapter {
     return await _activeAccountRepository.tryGetActiveAccount();
   }
 
-  Future<List<legacy.Wallet>> listWallets() async {
+  Future<List<legacy.LegacyWallet>> listWallets() async {
     final wallets = await _walletsRepository.listWallets();
 
     return wallets.map((w) => w.toLegacy()).toList();
@@ -93,18 +93,18 @@ class LegacyDatabaseAdapter {
     }
   }
 
-  Future<List<legacy.Wallet>> getLegacyStoredWallets() async {
+  Future<List<legacy.LegacyWallet>> getLegacyStoredWallets() async {
     final Database db = await Db.db;
     final List<Map<String, dynamic>> walletsJson = await db.query('Wallet');
 
     Log('LegacyDatabaseAdapter:getLegacyStoredWallets', walletsJson.length);
     return walletsJson
-        .map((e) => legacy.Wallet(id: e['id'], name: e['name']))
+        .map((e) => legacy.LegacyWallet(id: e['id'], name: e['name']))
         .toList();
   }
 
   List<Wallet> getNonMigratedWallets(
-      List<legacy.Wallet> legacyWallets, List<Wallet> wallets) {
+      List<legacy.LegacyWallet> legacyWallets, List<Wallet> wallets) {
     return legacyWallets
         .where((legacyWallet) => !walletExistsInWallets(legacyWallet, wallets))
         .map((w) => Wallet(
@@ -112,7 +112,8 @@ class LegacyDatabaseAdapter {
         .toList();
   }
 
-  bool walletExistsInWallets(legacy.Wallet legacyWallet, List<Wallet> wallets) {
+  bool walletExistsInWallets(
+      legacy.LegacyWallet legacyWallet, List<Wallet> wallets) {
     assert(legacyWallet.id != null);
     return wallets.any((wallet) => wallet.walletId == legacyWallet.id);
   }

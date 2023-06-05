@@ -64,7 +64,7 @@ class Account extends HiveObject {
   /// This can be used in the single-account legacy code as the wallet ID.
   String get legacyId => '$walletId:${accountId.toJson().toString()}';
 
-  legacy.Wallet asLegacyWallet() => legacy.Wallet(
+  legacy.LegacyWallet asLegacyWallet() => legacy.LegacyWallet(
         name: name,
         id: legacyId,
       );

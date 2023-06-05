@@ -80,7 +80,7 @@ class UnlockPassword extends StatefulWidget {
   final Function(String)? onSuccess;
   final Function(String)? onError;
   final SvgPicture? icon;
-  final Wallet currentWallet;
+  final LegacyWallet currentWallet;
 
   @override
   _UnlockPasswordState createState() => _UnlockPasswordState();

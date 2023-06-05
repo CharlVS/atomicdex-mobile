@@ -11,10 +11,10 @@ import '../model/wallet.dart';
 class EncryptionTool {
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
-  String keyPassword(KeyEncryption key, Wallet wallet) =>
+  String keyPassword(KeyEncryption key, LegacyWallet wallet) =>
       'password${key.toString()}${wallet.name}${wallet.id}';
 
-  String keyData(KeyEncryption key, Wallet wallet, String? password) =>
+  String keyData(KeyEncryption key, LegacyWallet wallet, String? password) =>
       '${key.toString()}$password${wallet.name}${wallet.id}';
 
   // MRC: It seems our previous version of flutter_sodium was using Argon2id,
@@ -24,7 +24,7 @@ class EncryptionTool {
   // https://libsodium.gitbook.io/doc/password_hashing/default_phf#notes
 
   Future<bool> isPasswordValid(
-      KeyEncryption key, Wallet wallet, String? password) async {
+      KeyEncryption key, LegacyWallet wallet, String? password) async {
     if (password == null) throw PasswordNotSetException('Password not set');
 
     if (key == KeyEncryption.SEED) {
@@ -136,8 +136,8 @@ class EncryptionTool {
     }
   }
 
-  Future<void> writeData(KeyEncryption key, Wallet wallet, String? password,
-          String? data) async =>
+  Future<void> writeData(KeyEncryption key, LegacyWallet wallet,
+          String? password, String? data) async =>
       await storage
           .write(key: keyData(key, wallet, password), value: data)
           .then((_) async {
@@ -149,7 +149,7 @@ class EncryptionTool {
       });
 
   Future<String?> readData(
-          KeyEncryption key, Wallet wallet, String password) async =>
+          KeyEncryption key, LegacyWallet wallet, String password) async =>
       await isPasswordValid(key, wallet, password)
           .catchError((dynamic e) => throw e)
           .then(
@@ -162,7 +162,7 @@ class EncryptionTool {
   // following a similar pattern to Javascript's promises. Prefer async
   // blocks and await instead.
   Future<void> deleteData(
-          KeyEncryption key, Wallet wallet, String? password) async =>
+          KeyEncryption key, LegacyWallet wallet, String? password) async =>
       await isPasswordValid(key, wallet, password)
           .catchError((dynamic e) => throw e)
           .then((bool res) async {

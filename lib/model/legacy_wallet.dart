@@ -1,18 +1,18 @@
 import 'dart:convert';
 
-List<Wallet> walletFromJson(String str) =>
-    List<Wallet>.from(json.decode(str).map((dynamic x) => Wallet.fromJson(x)));
+List<LegacyWallet> walletFromJson(String str) => List<LegacyWallet>.from(
+    json.decode(str).map((dynamic x) => LegacyWallet.fromJson(x)));
 
-String walletToJson(List<Wallet> data) => json
+String walletToJson(List<LegacyWallet> data) => json
     .encode(List<dynamic>.from(data.map<dynamic>((dynamic x) => x.toJson())));
 
-class Wallet {
-  Wallet({
+class LegacyWallet {
+  LegacyWallet({
     required this.name,
     required this.id,
   });
 
-  factory Wallet.fromJson(Map<String, dynamic> json) => Wallet(
+  factory LegacyWallet.fromJson(Map<String, dynamic> json) => LegacyWallet(
         id: json['id'] ?? '',
         name: json['name'] ?? '',
       );
