@@ -1,28 +1,39 @@
-import 'dart:convert';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
-List<LegacyWallet> walletFromJson(String str) => List<LegacyWallet>.from(
-    json.decode(str).map((dynamic x) => LegacyWallet.fromJson(x)));
-
-String walletToJson(List<LegacyWallet> data) => json
-    .encode(List<dynamic>.from(data.map<dynamic>((dynamic x) => x.toJson())));
-
-class LegacyWallet {
+/// @deprecated LegacyWallet has been replaced by the Wallet class in the
+/// [komodo_wallet_sdk] package. Existing code can use LegacyWallet as a drop-in
+/// replacement for the old Wallet class, but new code should use the Wallet
+/// class directly.
+///
+/// This class extends the new Wallet class and maintains the interface of the
+/// old Wallet class for backwards compatibility.
+@Deprecated('Use Wallet from the komodo_wallet_sdk package instead.')
+class LegacyWallet extends KomodoWallet {
+  @Deprecated(_deprecatedMessage)
   LegacyWallet({
-    required this.name,
-    required this.id,
-  });
+    required super.name,
+    required String id,
+  }) : super(
+          walletId: id,
+          description: null,
+          balance: null,
+          color: null,
+          profileImage: null,
+        );
 
-  factory LegacyWallet.fromJson(Map<String, dynamic> json) => LegacyWallet(
-        id: json['id'] ?? '',
-        name: json['name'] ?? '',
-      );
+  String get id => walletId;
 
-  String? name;
-  String? id;
-  bool? isFastEncryption;
+  static const String _deprecatedMessage =
+      'LegacyWallet is deprecated. Use Wallet from the komodo_wallet_sdk '
+      'package instead.';
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id ?? '',
-        'name': name ?? '',
-      };
+  /// Creates a JSON map from a LegacyWallet instance.
+  ///
+  /// The map contains a 'name' key and an 'id' key, each associated with the
+  /// corresponding property of the LegacyWallet instance.
+  @override
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'id': walletId,
+      }..addAll(super.toJson());
 }
