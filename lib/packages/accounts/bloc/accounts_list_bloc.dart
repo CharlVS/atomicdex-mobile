@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:komodo_dex/packages/accounts/events/accounts_list_event.dart';
-import 'package:komodo_dex/packages/accounts/models/account.dart';
 import 'package:komodo_dex/packages/accounts/repository/account_repository.dart';
 import 'package:komodo_dex/packages/accounts/state/accounts_list_state.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 class AccountsListBloc extends Bloc<AccountsListEvent, AccountsListState> {
   final AccountRepository _accountRepository;
@@ -29,8 +29,8 @@ class AccountsListBloc extends Bloc<AccountsListEvent, AccountsListState> {
     }
 
     try {
-      await emit.forEach<List<Account>>(_accountRepository.accountsStream(),
-          onData: (accounts) {
+      await emit.forEach<List<KomodoAccount>>(
+          _accountRepository.accountsStream(), onData: (accounts) {
         return AccountsListLoadSuccess(accounts);
       }, onError: (e, s) {
         return AccountsListError(e.toString());

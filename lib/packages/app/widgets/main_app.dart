@@ -133,7 +133,10 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
           title: appConfig.appName,
           debugShowCheckedModeBanner: _shouldShowDebugBanner,
           localizationsDelegates: localizationsDelegates,
-          theme: appTheme,
+          // theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+          theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+          darkTheme:
+              ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
           builder: (context, child) =>
               MiddlewareWidgets(child: child ?? Container()),
           // themeMode: ThemeMode.dark,

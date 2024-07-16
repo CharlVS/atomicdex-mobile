@@ -32,8 +32,7 @@ class _AppDrawerState extends State<AppDrawer> {
     if (drawerWidth < 200) drawerWidth = 200;
     final headerHeight = MediaQuery.of(context).size.height * 0.25;
 
-    final currentWallet =
-        context.watch<AuthenticationBloc>().state.wallet?.toLegacy();
+    final currentWallet = context.watch<AuthenticationBloc>().state.wallet;
 
     final activeAccount =
         context.watch<ActiveAccountBloc>().state.activeOrPendingAccount;

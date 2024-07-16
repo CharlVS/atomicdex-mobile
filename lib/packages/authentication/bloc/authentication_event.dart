@@ -17,7 +17,7 @@ class AuthenticationStatusChanged extends AuthenticationEvent {
 }
 
 class AuthenticationUserChanged extends AuthenticationEvent {
-  final Wallet wallet;
+  final KomodoWallet wallet;
 
   const AuthenticationUserChanged(this.wallet);
 

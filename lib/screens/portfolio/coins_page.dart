@@ -1,22 +1,19 @@
 import 'dart:math';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:komodo_dex/common_widgets/circular_avatar_button.dart';
 import 'package:komodo_dex/generic_blocs/coins_bloc.dart';
-import 'package:komodo_dex/generic_blocs/settings_bloc.dart';
 import 'package:komodo_dex/localizations.dart';
 import 'package:komodo_dex/model/cex_provider.dart';
 import 'package:komodo_dex/model/coin_balance.dart';
 import 'package:komodo_dex/packages/accounts/bloc/active_account_bloc.dart';
-import 'package:komodo_dex/packages/accounts/models/account.dart';
+import 'package:komodo_dex/packages/home/widgets/home_account_row.dart';
 import 'package:komodo_dex/screens/portfolio/add_coin_button.dart';
 import 'package:komodo_dex/screens/portfolio/item_coin.dart';
 import 'package:komodo_dex/screens/portfolio/loading_coin.dart';
 import 'package:komodo_dex/services/mm_service.dart';
-import 'package:komodo_dex/utils/utils.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 import 'package:provider/provider.dart';
 
 class CoinsPage extends StatefulWidget {
@@ -34,7 +31,7 @@ class _CoinsPageState extends State<CoinsPage> {
   late double _heightSliver;
   late double _widthScreen;
 
-  Account? _lastActiveAccount;
+  KomodoAccount? _lastActiveAccount;
 
   void _scrollListener() {
     setState(() {
@@ -61,201 +58,292 @@ class _CoinsPageState extends State<CoinsPage> {
     final bool isCollapsed = _scrollController!.hasClients &&
         _scrollController!.offset > _heightSliver;
 
-    final activeAccount =
-        context.watch<ActiveAccountBloc>().state.activeOrPendingAccount;
+    final activeAccount = context.select<ActiveAccountBloc, KomodoAccount?>(
+      (bloc) => bloc.state.activeAccount,
+    );
 
     _lastActiveAccount = activeAccount ?? _lastActiveAccount;
 
-    return NestedScrollView(
-      controller: _scrollController,
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return <Widget>[
-          SliverAppBar(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            expandedHeight: 130,
-            pinned: true,
-
-            // Switch accounts button
-            leading: SizedBox.square(
-              child: Hero(
-                tag: _lastActiveAccount?.accountId ?? 'switch-accounts-button',
-                child: CircularAvatarButton(
-                  key: Key('switch-accounts-button'),
-                  color: _lastActiveAccount?.themeColor ??
-                      Theme.of(context).primaryColor,
-                  onPressed: () {
-                    context.read<ActiveAccountBloc>().add(
-                          ActiveAccountClearRequested(),
-                        );
-                  },
-                  child: Text(
-                    _lastActiveAccount?.name.initials(2) ?? '',
-                  ),
+    return Column(
+      children: [
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(16),
                 ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: HomeAccountRow(account: activeAccount!),
+                  ),
+                  // BalanceCard(balance: 123),
+                  SizedBox(height: 32),
+                ],
               ),
             ),
-            actions: [
-              AnimatedOpacity(
-                opacity: isCollapsed ? 1 : 0,
-                duration: Duration(milliseconds: 600),
-                curve: Curves.easeInOutExpo,
-                child: IgnorePointer(
-                  ignoring: !isCollapsed,
-                  child: AddCoinButton(
-                    key: Key('add-coin-button-collapsed'),
-                    isCollapsed: true,
-                  ),
-                ),
-              ),
-              SizedBox(width: 8),
-            ],
-            flexibleSpace: Builder(
-              builder: (BuildContext context) {
-                return Stack(
-                  children: <Widget>[
-                    FlexibleSpaceBar(
-                      collapseMode: CollapseMode.pin,
-                      centerTitle: true,
-                      titlePadding: EdgeInsetsDirectional.only(bottom: 4),
-                      title: SizedBox(
-                        width: _widthScreen * 0.5,
-                        child: Center(
-                          heightFactor: _heightFactor,
-                          child: StreamBuilder<List<CoinBalance>>(
-                            initialData: coinsBloc.coinBalance,
-                            stream: coinsBloc.outCoins,
-                            builder: (
-                              BuildContext context,
-                              AsyncSnapshot<List<CoinBalance>> snapshot,
-                            ) {
-                              if (snapshot.data != null) {
-                                double totalBalanceUSD = 0;
-
-                                for (final CoinBalance coinBalance
-                                    in snapshot.data!) {
-                                  totalBalanceUSD += coinBalance.balanceUSD!;
-                                }
-                                return StreamBuilder<bool>(
-                                  initialData: settingsBloc.showBalance,
-                                  stream: settingsBloc.outShowBalance,
-                                  builder: (
-                                    BuildContext context,
-                                    AsyncSnapshot<bool> snapshot,
-                                  ) {
-                                    bool hidden = false;
-                                    if (snapshot.hasData && !snapshot.data!) {
-                                      hidden = true;
-                                    }
-                                    final String amountText =
-                                        _cexProvider.convert(
-                                      totalBalanceUSD,
-                                      hidden: hidden,
-                                    )!;
-                                    return TextButton(
-                                      onPressed: () =>
-                                          _cexProvider.switchCurrency(),
-                                      style: TextButton.styleFrom(
-                                        primary: isCollapsed
-                                            ? Theme.of(context).brightness ==
-                                                    Brightness.light
-                                                ? Colors.black.withOpacity(0.8)
-                                                : Colors.white
-                                            : Colors.white.withOpacity(0.8),
-                                        textStyle: Theme.of(context)
-                                            .textTheme
-                                            .headline6,
-                                      ),
-                                      child: AutoSizeText(
-                                        amountText,
-                                        maxFontSize: 18,
-                                        minFontSize: 12,
-                                        maxLines: 1,
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return Center(
-                                  child: const CircularProgressIndicator(),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      background: Container(
-                        height: _heightScreen * 0.35,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
-                            stops: const <double>[0.01, 1],
-                            colors: const <Color>[
-                              Color.fromRGBO(98, 90, 229, 1),
-                              Color.fromRGBO(45, 184, 240, 1),
-                            ],
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              const LoadAsset(),
-                              const SizedBox(
-                                height: 14,
-                              ),
-                              StreamBuilder<bool>(
-                                initialData: settingsBloc.showBalance,
-                                stream: settingsBloc.outShowBalance,
-                                builder: (
-                                  BuildContext context,
-                                  AsyncSnapshot<bool> snapshot,
-                                ) {
-                                  return snapshot.hasData && snapshot.data!
-                                      ? BarGraph()
-                                      : SizedBox();
-                                },
-                              )
-                            ],
-                          ),
+            Positioned(
+              bottom: -24, // half of button's height, adjust as needed
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.call_made),
+                            Text('Send'),
+                          ],
                         ),
                       ),
                     ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: _buildProgressIndicator(),
+                    SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.swap_horiz),
+                            Text('Swap'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.call_received),
+                            Text('Receive'),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
-                );
-              },
-            ),
-            automaticallyImplyLeading: false,
-          ),
-          SliverAppBar(
-            primary: false,
-            automaticallyImplyLeading: false,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            toolbarHeight: 48,
-            actions: const [SizedBox()],
-            flexibleSpace: Center(
-              child: IntrinsicWidth(
-                // Child has infite width. We want to change so that it
-                // ignores the infinite width and takes up min width.
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: AddCoinButton(key: Key('add-coin-button')),
                 ),
               ),
             ),
-            pinned: false,
+          ],
+        ),
+        SizedBox(height: 16), // Add equivalent space here
+        Expanded(child: const ListCoins()),
+
+        //
+        if (false)
+          NestedScrollView(
+            controller: _scrollController,
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                // SliverAppBar(
+                //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                //   expandedHeight: 130,
+                //   pinned: true,
+
+                //   // Switch accounts button
+                //   leading: SizedBox.square(
+                //     child: Hero(
+                //       tag: _lastActiveAccount?.accountId ?? 'switch-accounts-button',
+                //       child: CircularAvatarButton(
+                //         key: Key('switch-accounts-button'),
+                //         color: _lastActiveAccount?.themeColor ??
+                //             Theme.of(context).primaryColor,
+                //         onPressed: () {
+                //           context.read<ActiveAccountBloc>().add(
+                //                 ActiveAccountClearRequested(),
+                //               );
+                //         },
+                //         child: Text(
+                //           _lastActiveAccount?.name.initials(2) ?? '',
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                //   actions: [
+                //     AnimatedOpacity(
+                //       opacity: isCollapsed ? 1 : 0,
+                //       duration: Duration(milliseconds: 600),
+                //       curve: Curves.easeInOutExpo,
+                //       child: IgnorePointer(
+                //         ignoring: !isCollapsed,
+                //         child: AddCoinButton(
+                //           key: Key('add-coin-button-collapsed'),
+                //           isCollapsed: true,
+                //         ),
+                //       ),
+                //     ),
+                //     SizedBox(width: 8),
+                //   ],
+                //   flexibleSpace: Builder(
+                //     builder: (BuildContext context) {
+                //       return Stack(
+                //         children: <Widget>[
+                //           FlexibleSpaceBar(
+                //             collapseMode: CollapseMode.pin,
+                //             centerTitle: true,
+                //             titlePadding: EdgeInsetsDirectional.only(bottom: 4),
+                //             title: SizedBox(
+                //               width: _widthScreen * 0.5,
+                //               child: Center(
+                //                 heightFactor: _heightFactor,
+                //                 child: StreamBuilder<List<CoinBalance>>(
+                //                   initialData: coinsBloc.coinBalance,
+                //                   stream: coinsBloc.outCoins,
+                //                   builder: (
+                //                     BuildContext context,
+                //                     AsyncSnapshot<List<CoinBalance>> snapshot,
+                //                   ) {
+                //                     if (snapshot.data != null) {
+                //                       double totalBalanceUSD = 0;
+
+                //                       for (final CoinBalance coinBalance
+                //                           in snapshot.data!) {
+                //                         totalBalanceUSD += coinBalance.balanceUSD!;
+                //                       }
+                //                       return StreamBuilder<bool>(
+                //                         initialData: settingsBloc.showBalance,
+                //                         stream: settingsBloc.outShowBalance,
+                //                         builder: (
+                //                           BuildContext context,
+                //                           AsyncSnapshot<bool> snapshot,
+                //                         ) {
+                //                           bool hidden = false;
+                //                           if (snapshot.hasData && !snapshot.data!) {
+                //                             hidden = true;
+                //                           }
+                //                           final String amountText =
+                //                               _cexProvider.convert(
+                //                             totalBalanceUSD,
+                //                             hidden: hidden,
+                //                           )!;
+                //                           return TextButton(
+                //                             onPressed: () =>
+                //                                 _cexProvider.switchCurrency(),
+                //                             style: TextButton.styleFrom(
+                //                               primary: isCollapsed
+                //                                   ? Theme.of(context).brightness ==
+                //                                           Brightness.light
+                //                                       ? Colors.black.withOpacity(0.8)
+                //                                       : Colors.white
+                //                                   : Colors.white.withOpacity(0.8),
+                //                               textStyle: Theme.of(context)
+                //                                   .textTheme
+                //                                   .headline6,
+                //                             ),
+                //                             child: AutoSizeText(
+                //                               amountText,
+                //                               maxFontSize: 18,
+                //                               minFontSize: 12,
+                //                               maxLines: 1,
+                //                             ),
+                //                           );
+                //                         },
+                //                       );
+                //                     } else {
+                //                       return Center(
+                //                         child: const CircularProgressIndicator(),
+                //                       );
+                //                     }
+                //                   },
+                //                 ),
+                //               ),
+                //             ),
+                //             background: Container(
+                //               height: _heightScreen * 0.35,
+                //               decoration: BoxDecoration(
+                //                 gradient: LinearGradient(
+                //                   begin: Alignment.bottomLeft,
+                //                   end: Alignment.topRight,
+                //                   stops: const <double>[0.01, 1],
+                //                   colors: const <Color>[
+                //                     Color.fromRGBO(98, 90, 229, 1),
+                //                     Color.fromRGBO(45, 184, 240, 1),
+                //                   ],
+                //                 ),
+                //               ),
+                //               child: Padding(
+                //                 padding: const EdgeInsets.only(bottom: 16),
+                //                 child: Column(
+                //                   mainAxisAlignment: MainAxisAlignment.end,
+                //                   crossAxisAlignment: CrossAxisAlignment.center,
+                //                   children: <Widget>[
+                //                     const LoadAsset(),
+                //                     const SizedBox(
+                //                       height: 14,
+                //                     ),
+                //                     StreamBuilder<bool>(
+                //                       initialData: settingsBloc.showBalance,
+                //                       stream: settingsBloc.outShowBalance,
+                //                       builder: (
+                //                         BuildContext context,
+                //                         AsyncSnapshot<bool> snapshot,
+                //                       ) {
+                //                         return snapshot.hasData && snapshot.data!
+                //                             ? BarGraph()
+                //                             : SizedBox();
+                //                       },
+                //                     )
+                //                   ],
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //           Positioned(
+                //             left: 0,
+                //             right: 0,
+                //             bottom: 0,
+                //             child: _buildProgressIndicator(),
+                //           ),
+                //         ],
+                //       );
+                //     },
+                //   ),
+                //   automaticallyImplyLeading: false,
+                // ),
+
+                SliverAppBar(
+                  primary: false,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  toolbarHeight: 48,
+                  actions: const [SizedBox()],
+                  flexibleSpace: Center(
+                    child: IntrinsicWidth(
+                      // Child has infite width. We want to change so that it
+                      // ignores the infinite width and takes up min width.
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: AddCoinButton(key: Key('add-coin-button')),
+                      ),
+                    ),
+                  ),
+                  pinned: false,
+                ),
+              ];
+            },
+            body: const ListCoins(),
           ),
-        ];
-      },
-      body: const ListCoins(),
+      ],
     );
   }
 

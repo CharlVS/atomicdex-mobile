@@ -26,17 +26,26 @@ dependencies:
   flutter_localizations: # flutter.dev
     sdk: flutter
 
-  #-----Flutter first party packages-----
-  # collection: ^1.15.0-nullsafety.4 # Auto import by Dart null safety migration tool. Replaced with own util.
+  #----- Flutter first-party packages-----
+
+
+  #----- Dart first-party packages-----
+  # Packages maintained by the Dart team. Supported and maintained by Dart/Google. These packages come
+  # with a high Service Level Objective (SLO) and are triaged on a regular basis.
+  # See more details at https://dart.dev/resources/dart-team-packages
+
+  collection: ^1.17.1 # Publisher: pub.dev (Built on Dart Core. No external dependencies.)
+
+  intl: ^0.18.0
 
   #----- Komodo Platform packages -----
   komodo_wallet_sdk:
     # 1- Git version:
-    git:
-      url: https://github.com/KomodoPlatform/komodo_wallet_sdk_flutter.git
-      # TODO! ref: 
+    # git:
+    #   url: https://github.com/KomodoPlatform/komodo_wallet_sdk_flutter.git
+    #   # TODO! ref: 
     # 2- Or, if you want to use your own local copy:
-    # path: /Users/{YOUR_USER}/komodo_wallet_sdk_flutter
+    path: /Users/charl/Code/UTXO/komodo_wallet_sdk
 
 
   #-----flutter.dev, dart.dev--------
@@ -52,6 +61,7 @@ dependencies:
 
   local_auth: ^2.1.6 # flutter.dev (Note: Supports null safety)
 
+  # TODO: Upgrade to major release v1.
   http: ^0.13.5 # dart.dev (Note: Supports null safety)
 
   crypto: 3.0.2 # dart.dev (Note: Supports null safety)
@@ -212,11 +222,12 @@ dependencies:
   google_fonts: ^4.0.3
   equatable: ^2.0.5
   hive: ^2.2.3
-  biometric_storage: ^4.1.3
   beamer: ^1.5.3
   json_annotation: ^4.8.0
   image_picker: ^0.8.7+4
   archive: ^3.3.7
+  fl_chart: ^0.62.0
+  
 
 dev_dependencies:
   integration_test:
@@ -232,8 +243,11 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path_ios: "assets/branding/logo_app.png"
-  image_path_android: "assets/branding/logo_app.png"
+  remove_alpha_ios: true
+  image_path: "assets/branding/logo_app.png"
+  image_path_ios: "assets/branding/ios_app_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/branding/ic_launcher.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

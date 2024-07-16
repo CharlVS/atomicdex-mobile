@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +9,11 @@ import 'package:komodo_dex/packages/accounts/bloc/accounts_list_bloc.dart';
 import 'package:komodo_dex/packages/accounts/bloc/active_account_bloc.dart';
 import 'package:komodo_dex/packages/accounts/events/account_form_event.dart';
 import 'package:komodo_dex/packages/accounts/events/accounts_list_event.dart';
-import 'package:komodo_dex/packages/accounts/events/active_account_event.dart';
-import 'package:komodo_dex/packages/accounts/models/account.dart';
 import 'package:komodo_dex/packages/accounts/state/accounts_list_state.dart';
-import 'package:komodo_dex/packages/accounts/state/active_account_state.dart';
 import 'package:komodo_dex/packages/app/widgets/main_app.dart';
 import 'package:komodo_dex/packages/authentication/bloc/authentication_bloc.dart';
 import 'package:komodo_dex/utils/utils.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 class AccountsListPage extends StatefulWidget {
   @override
@@ -33,9 +30,10 @@ class _AccountsListPageState extends State<AccountsListPage> {
   @override
   Widget build(BuildContext context) {
     final bool isActiveAccountLoading = context.select(
-        (ActiveAccountBloc bloc) =>
-            bloc.state is ActiveAccountInProgress ||
-            bloc.state is ActiveAccountSwitchInProgress);
+      (ActiveAccountBloc bloc) =>
+          bloc.state is ActiveAccountInProgress ||
+          bloc.state is ActiveAccountSwitchInProgress,
+    );
     return MultiBlocListener(
       listeners: [
         BlocListener<AccountsListBloc, AccountsListState>(
@@ -125,7 +123,9 @@ class _AccountsListPageState extends State<AccountsListPage> {
   }
 
   void _onAccountsListStateChange(
-      BuildContext context, AccountsListState state) {
+    BuildContext context,
+    AccountsListState state,
+  ) {
     if (state is AccountsListError) {
       MainApp.rootScaffoldMessengerKey.currentState?.showSnackBar(
         SnackBar(content: Text(state.message)),
@@ -134,9 +134,11 @@ class _AccountsListPageState extends State<AccountsListPage> {
   }
 
   void _onActiveAccountStateChange(
-      BuildContext context, ActiveAccountState state) {
+    BuildContext context,
+    ActiveAccountState state,
+  ) {
     if (state is ActiveAccountSuccess) {
-      Beamer.of(context).beamToNamed(AppRoutes.legacy.portfolio());
+      Beamer.of(context).beamToNamed(AppRoutes.home.home());
     } else if (state is ActiveAccountFailure) {
       MainApp.rootScaffoldMessengerKey.currentState?.showSnackBar(
         SnackBar(content: Text(state.error)),
@@ -144,13 +146,13 @@ class _AccountsListPageState extends State<AccountsListPage> {
     }
   }
 
-  void _onTapAccount(Account account) {
+  void _onTapAccount(KomodoAccount account) {
     context.read<ActiveAccountBloc>().add(
           ActiveAccountSwitchRequested(requestedAccountId: account.accountId),
         );
   }
 
-  void _onProfileEdit(Account account) {
+  void _onProfileEdit(KomodoAccount account) {
     context.read<AccountFormBloc>().add(
           AccountFormStartedEvent(account: account),
         );

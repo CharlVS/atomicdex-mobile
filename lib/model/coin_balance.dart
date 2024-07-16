@@ -1,3 +1,5 @@
+import 'package:komodo_dex/utils/utils.dart';
+
 import '../model/balance.dart';
 import '../model/coin.dart';
 
@@ -15,6 +17,8 @@ class CoinBalance {
   Balance? balance;
   double? balanceUSD;
   String? priceForOne;
+
+  String? get iconAssetPath => getCoinIconPath(coin!.abbr);
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{

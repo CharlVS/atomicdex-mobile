@@ -19,7 +19,8 @@ class AppBottomNavigationBar extends StatefulWidget {
   State<AppBottomNavigationBar> createState() => _AppBottomNavigationBarState();
 
   static Set<String> tabPaths = {
-    AppRoutes.legacy.portfolio(),
+    AppRoutes.legacy.home(),
+    AppRoutes.portfolio.portfolio(),
     // AppRoutes.legacy.dex(),
     AppRoutes.legacy.orders(),
     AppRoutes.legacy.markets(),
@@ -44,8 +45,17 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
       elevation: 1,
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
+            icon: const Icon(
+              Icons.home,
+              key: Key('main-nav-home'),
+            ),
+            // TODO: Localize
+            label: 'Home'
+            // label: AppLocalizations.of(context)!.home,
+            ),
+        BottomNavigationBarItem(
           icon: const Icon(
-            Icons.account_balance_wallet,
+            Icons.account_balance_wallet_rounded,
             key: Key('main-nav-portfolio'),
           ),
           label: AppLocalizations.of(context)!.portfolio,
@@ -54,13 +64,13 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
           icon: const Icon(Icons.swap_vert, key: Key('main-nav-orders')),
           label: AppLocalizations.of(context)!.orders.toSentenceCase(),
         ),
-        BottomNavigationBarItem(
-          icon: const Icon(
-            Icons.show_chart,
-            key: Key('main-nav-markets'),
-          ),
-          label: AppLocalizations.of(context)!.marketsTab,
-        ),
+        // BottomNavigationBarItem(
+        //   icon: const Icon(
+        //     Icons.show_chart,
+        //     key: Key('main-nav-markets'),
+        //   ),
+        //   label: AppLocalizations.of(context)!.marketsTab,
+        // ),
         if (appConfig.isFeedEnabled)
           BottomNavigationBarItem(
             label: AppLocalizations.of(context)!.feedTab,

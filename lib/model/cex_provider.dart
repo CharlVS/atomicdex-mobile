@@ -576,7 +576,8 @@ class CexPrices {
 
   bool _isFiat(String? abbr) {
     if (abbr == 'USD') return true;
-    return _fiatCurrencies[abbr!] != null;
+    if (abbr == null) return false;
+    return _fiatCurrencies[abbr] != null;
   }
 
   Future<void> updatePrices([List<Coin?>? coinsList]) async {

@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:komodo_dex/packages/biometrics/bloc/biometrics_status_bloc.dart';
 import 'package:komodo_dex/packages/biometrics/event/biometrics_status_event.dart';
-import 'package:komodo_dex/packages/biometrics/repository/biometrics_status_repository.dart';
 import 'package:komodo_dex/packages/biometrics/state/biometrics_status_state.dart';
 
 class BiometricsStatusOverlay extends StatefulWidget {
-  const BiometricsStatusOverlay({Key? key}) : super(key: key);
+  const BiometricsStatusOverlay({super.key});
 
   @override
   State<BiometricsStatusOverlay> createState() =>
@@ -14,9 +13,7 @@ class BiometricsStatusOverlay extends StatefulWidget {
 }
 
 class _BiometricsStatusOverlayState extends State<BiometricsStatusOverlay> {
-  final BiometricsStatusBloc _biometricsStatusBloc = BiometricsStatusBloc(
-    BiometricsStatusRepository(),
-  );
+  final BiometricsStatusBloc _biometricsStatusBloc = BiometricsStatusBloc();
 
   @override
   void initState() {

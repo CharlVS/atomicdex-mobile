@@ -1,11 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:komodo_dex/packages/authentication/repository/authentication_repository.dart';
-import 'package:komodo_dex/packages/accounts/models/account.dart';
-import 'package:komodo_dex/packages/wallets/models/wallet.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 class AuthenticationState extends Equatable {
   final AuthenticationStatus status;
-  final Wallet? wallet;
+  final KomodoWallet? wallet;
   final String? error;
 
   bool get hasError => error != null;
@@ -28,7 +27,7 @@ class AuthenticationState extends Equatable {
 
   const AuthenticationState.unknown() : this._();
 
-  const AuthenticationState.authenticated(Wallet wallet)
+  const AuthenticationState.authenticated(KomodoWallet wallet)
       : this._(
           status: AuthenticationStatus.authenticated,
           wallet: wallet,
@@ -49,7 +48,7 @@ class AuthenticationState extends Equatable {
       status: AuthenticationStatus.values.firstWhere(
         (e) => e.toString() == status,
       ),
-      wallet: wallet != null ? Wallet.fromJson(wallet) : null,
+      wallet: wallet != null ? KomodoWallet.fromJson(wallet) : null,
     );
   }
 

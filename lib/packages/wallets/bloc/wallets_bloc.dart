@@ -3,10 +3,10 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:komodo_dex/packages/wallets/events/wallets_event.dart';
 import 'package:komodo_dex/packages/wallets/events/wallets_load_requested.dart';
 import 'package:komodo_dex/packages/wallets/events/wallets_quick_create_submitted.dart';
-import 'package:komodo_dex/packages/wallets/models/wallet.dart';
 import 'package:komodo_dex/packages/wallets/repository/wallets_repository.dart';
 import 'package:komodo_dex/packages/wallets/state/wallets_state.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 import 'package:uuid/uuid.dart';
 
 // TODO: Listen to realtime changes from the repository.
@@ -22,7 +22,7 @@ class WalletsBloc extends HydratedBloc<WalletsEvent, WalletsState> {
 
   void _onWalletsQuickCreateSubmitted(
       WalletsQuickCreateSubmitted event, Emitter<WalletsState> emit) async {
-    final newWallet = Wallet(
+    final newWallet = KomodoWallet (
       walletId: Uuid().v4(),
       name: event.name,
       description: event.description,

@@ -2,14 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:komodo_dex/atomicdex_api/atomicdex_api.dart' hide Account;
 import 'package:komodo_dex/localizations.dart';
 import 'package:komodo_dex/login/exceptions/auth_exceptions.dart';
-import 'package:komodo_dex/packages/authentication/repository/exceptions.dart';
-import 'package:komodo_dex/packages/biometrics/api/biometric_storage_api.dart';
-import 'package:komodo_dex/packages/wallets/api/wallet_storage_api.dart';
-import 'package:komodo_dex/packages/wallets/models/wallet.dart';
+import 'package:komodo_dex/packages/accounts/repository/active_account_repository.dart';
 import 'package:komodo_dex/services/mm_service.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -28,26 +25,22 @@ class AuthenticationRepository {
     required this.prefs,
     required Database sqlDB,
     required MMService marketMakerService,
-    required AtomicDexApi atomicDexApi,
-    // required BiometricStorageApi biometricStorageApi,
-    required WalletStorageApi walletStorageApi,
   })  : _sqlDB = sqlDB,
         // _biometricStorageApi = biometricStorageApi,
-        _atomicDexApi = atomicDexApi,
-        _apiService = marketMakerService,
-        _walletStorageApi = walletStorageApi;
+        // _walletStorageApi = walletStorageApi,
+        _apiService = marketMakerService;
 
   // final BiometricStorageApi _biometricStorageApi;
   final SharedPreferences prefs;
   final Database _sqlDB;
   final MMService _apiService;
 
-  final WalletStorageApi _walletStorageApi;
-  final AtomicDexApi _atomicDexApi;
   static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
+  KomodoWalletSdk get _sdk => KomodoWalletSdk.instance;
+
   AuthenticationStatus? _lastAuthState;
-  Wallet? _lastWallet;
+  KomodoWallet? _lastWallet;
 
   late final StreamSubscription<AuthenticationStatus> _subscription;
   final _controller = StreamController<AuthenticationStatus>.broadcast();
@@ -69,7 +62,7 @@ class AuthenticationRepository {
 
   Future<void> _setInternalState({
     required AuthenticationStatus? status,
-    Wallet? wallet,
+    KomodoWallet? wallet,
   }) async {
     final bool isAuthenticated = status == AuthenticationStatus.authenticated;
 
@@ -103,21 +96,17 @@ class AuthenticationRepository {
   static Future<AuthenticationRepository> instantiate({
     required Database sqlDB,
     required MMService marketMakerService,
-    WalletStorageApi? walletStorageApi,
-    required AtomicDexApi atomicDexApi,
+    // WalletStorageApi? walletStorageApi,
+    // required AtomicDexApi atomicDexApi,
     bool shouldTryRestore = true,
   }) async {
     final prefs = await SharedPreferences.getInstance();
-
-    walletStorageApi ??= await WalletStorageApi.create();
 
     final instance = AuthenticationRepository._(
       prefs: prefs,
       sqlDB: sqlDB,
       marketMakerService: marketMakerService,
       // biometricStorageApi: biometricStorageApi,
-      walletStorageApi: walletStorageApi,
-      atomicDexApi: atomicDexApi,
     );
 
     if (!shouldTryRestore) {
@@ -137,25 +126,30 @@ class AuthenticationRepository {
   }) async {
     // TODO:
     // 1. Check if the wallet exists
-    final walletProfile = await _walletStorageApi.getWallet(walletId);
+    final walletProfile = await _sdk.wallets.getWallet(walletId);
     if (walletProfile == null) {
       throw WalletNotFoundException('Wallet not found.');
     }
 
+    // TODO: Consider moving this to the SDK package. It would be ideal if we
+    // didn't need to fetch the passphrase value.
     // 2. Check if the passphrase is correct
-    final storedPassphrase =
-        await _walletStorageApi.getWalletPassphrase(walletId);
+    final storedPassphrase = await _sdk.wallets.getPassphrase(
+      walletId,
+      method: AuthenticationMethods.biometrics,
+    );
+
     if (storedPassphrase == null) {
-      throw WalletNotFoundException('Passphrase not found for wallet.');
+      throw WalletNotFoundException('Passphrase not found for wallet');
     }
 
     // Start the API service with the default account.
     // TODO: Implement in ActiveAccount Bloc/Repository the functionality to
     // resume the session with the last used account. After that is implemented,
     // the code below should be removed.
-    await _atomicDexApi.startSession(
+    await legacyStartSession(
       passphrase: storedPassphrase,
-      accountId: IguanaAccountId(),
+      hdAccountId: null,
     );
 
     await _setInternalState(
@@ -180,7 +174,7 @@ class AuthenticationRepository {
   }
 
   Future<bool> canBiometricsAuthenticate() async {
-    final result = await _walletStorageApi.canBiometricAuthenticate();
+    final result = await _sdk.biometrics.canAuthenticate();
 
     debugPrint('biometricsAvailable: $result');
 
@@ -194,7 +188,10 @@ class AuthenticationRepository {
   }
 
   Future<String?> getWalletPassphrase(String walletId) {
-    return _walletStorageApi.getWalletPassphrase(walletId);
+    return _sdk.wallets.getPassphrase(
+      walletId,
+      method: AuthenticationMethods.biometrics,
+    );
   }
 
   /// Tried to get the wallet profile of the currently authenticated wallet.
@@ -203,11 +200,11 @@ class AuthenticationRepository {
   ///
   /// Wallet can be seen as the equivalent to the `User` class often
   /// used in authentication examples.
-  Future<Wallet?> tryGetWallet() async {
+  Future<KomodoWallet?> tryGetWallet() async {
     if (!_isAuthenticated) {
       return null;
     }
-    final wallet = await _walletStorageApi.getWallet(_lastWallet!.walletId);
+    final wallet = await _sdk.wallets.getWallet(_lastWallet!.walletId);
 
     await _setInternalState(
       status: AuthenticationStatus.authenticated,
@@ -220,7 +217,7 @@ class AuthenticationRepository {
   //TODO.C: Auth bloc->repo try restore auth state on startup
 
   Future<void> logOut() async {
-    await _atomicDexApi.endSession();
+    await legacyEndSession();
     _controller.add(AuthenticationStatus.unauthenticated);
     _setInternalState(status: AuthenticationStatus.unauthenticated);
   }

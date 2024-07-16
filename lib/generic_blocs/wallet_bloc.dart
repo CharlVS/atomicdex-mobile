@@ -4,7 +4,7 @@ import 'package:komodo_dex/services/db/legacy_db_adapter.dart';
 import 'package:komodo_dex/utils/utils.dart';
 
 import '../generic_blocs/authenticate_bloc.dart';
-import '../model/wallet.dart';
+import '../model/legacy_wallet.dart';
 import '../services/db/database.dart';
 import '../utils/encryption_tool.dart';
 import '../widgets/bloc_provider.dart';

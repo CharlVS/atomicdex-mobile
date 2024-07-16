@@ -8,7 +8,7 @@ import '../../app_config/app_config.dart';
 import '../../generic_blocs/authenticate_bloc.dart';
 import '../../generic_blocs/wallet_bloc.dart';
 import '../../localizations.dart';
-import '../../model/wallet.dart';
+import '../../model/legacy_wallet.dart';
 import '../../services/db/database.dart';
 import '../../utils/encryption_tool.dart';
 import '../../utils/log.dart';

@@ -14,7 +14,7 @@ class AlignedIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return FilledButton(
       onPressed: onPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 0),

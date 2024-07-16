@@ -7,7 +7,6 @@ import 'package:komodo_dex/navigation/app_routes.dart';
 import 'package:komodo_dex/packages/authentication/bloc/authentication_bloc.dart';
 import 'package:komodo_dex/packages/wallets/bloc/wallets_bloc.dart';
 import 'package:komodo_dex/packages/wallets/events/wallets_load_requested.dart';
-import 'package:komodo_dex/packages/wallets/models/wallet.dart';
 import 'package:komodo_dex/packages/wallets/state/wallets_state.dart';
 import 'package:komodo_dex/packages/wallets/widgets/quick_create_wallet_button.dart';
 import 'package:komodo_dex/packages/wallets/widgets/wallet_profiles_content.dart';

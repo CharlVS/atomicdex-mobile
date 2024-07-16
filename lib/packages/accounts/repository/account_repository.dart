@@ -2,28 +2,25 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:komodo_dex/atomicdex_api/atomicdex_api.dart' hide Account;
-import 'package:komodo_dex/packages/accounts/api/account_api.dart';
-import 'package:komodo_dex/packages/accounts/models/account.dart';
 import 'package:komodo_dex/packages/authentication/repository/authentication_repository.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 class AccountRepository {
-  final AccountApi _accountApi;
+  KomodoWalletSdk get _sdk => KomodoWalletSdk.instance;
   final AuthenticationRepository _authenticationRepository;
 
   AccountRepository({
     // required AccountApi accountApi,
     required AuthenticationRepository authenticationRepository,
-  })  : _accountApi = AccountApi(),
-        _authenticationRepository = authenticationRepository;
+  }) : _authenticationRepository = authenticationRepository;
 
   /// Returns a stream of accounts for the currently authenticated user.
-  Stream<List<Account>> accountsStream() async* {
+  Stream<List<KomodoAccount>> accountsStream() async* {
     final wallet = await _authenticationRepository.tryGetWallet();
 
     if (wallet != null) {
       final walletId = wallet.walletId;
-      yield await _accountApi.getAccountsByWalletId(walletId);
+      yield await _sdk.accounts.getAccountsByWalletId(walletId);
     }
 
     // Listen to changes in auth user to either close the stream or
@@ -32,7 +29,7 @@ class AccountRepository {
         in _authenticationRepository.status) {
       if (status == AuthenticationStatus.authenticated) {
         final walletId = await _getAuthenticatedWalletId();
-        yield* _accountApi.accountsStream(walletId);
+        yield* _sdk.accounts.accountsStream(walletId);
       } else {
         // // Close the stream when unauthenticated or status is unknown.
         // // You can modify this behavior as needed.
@@ -43,7 +40,7 @@ class AccountRepository {
     }
   }
 
-  Future<Account> createAccount<T extends AccountId>({
+  Future<KomodoAccount> createAccount<T extends AccountId>({
     required String name,
     String? description,
     Color? themeColor,
@@ -51,7 +48,7 @@ class AccountRepository {
   }) async {
     final walletId = await _getAuthenticatedWalletId();
 
-    return _accountApi.createAccount<HDAccountId>(
+    return _sdk.accounts.createAccount<HDAccountId>(
       walletId: walletId,
       name: name,
       description: description,
@@ -60,7 +57,7 @@ class AccountRepository {
     );
   }
 
-  Future<Account> updateAccount({
+  Future<KomodoAccount> updateAccount({
     required AccountId accountId,
     required String name,
     String? description,
@@ -69,9 +66,9 @@ class AccountRepository {
   }) async {
     final walletId = await _getAuthenticatedWalletId();
 
-    return _accountApi.updateAccount(
+    return _sdk.accounts.updateAccount(
       currentWalletId: walletId,
-      account: Account(
+      account: KomodoAccount(
         walletId: walletId,
         accountId: accountId,
         name: name,
@@ -82,27 +79,27 @@ class AccountRepository {
     );
   }
 
-  Future<Account?> getAccount({required AccountId accountId}) async {
+  Future<KomodoAccount?> getAccount({required AccountId accountId}) async {
     final walletId = await _getAuthenticatedWalletId();
 
-    return await _accountApi.getAccount(
-        walletId: walletId, accountId: accountId);
+    return await _sdk.accounts
+        .getAccount(walletId: walletId, accountId: accountId);
   }
 
-  Future<List<Account>> getAuthUserAccounts() async {
+  Future<List<KomodoAccount>> getAuthUserAccounts() async {
     final walletId = await _getAuthenticatedWalletId();
 
-    return await _accountApi.getAccountsByWalletId(walletId);
+    return await _sdk.accounts.getAccountsByWalletId(walletId);
   }
 
   Future<void> deleteAccount(AccountId accountId) async {
     final walletId = await _getAuthenticatedWalletId();
 
-    await _accountApi.deleteAccount(walletId, accountId);
+    await _sdk.accounts.deleteAccount(walletId, accountId);
   }
 
   Future<void> dispose() async {
-    await _accountApi.dispose();
+    await _sdk.accounts.dispose();
   }
 
   Future<String> _getAuthenticatedWalletId() async {

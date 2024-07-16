@@ -64,7 +64,7 @@ class _AuthActiveAccountListenerState extends State<AuthActiveAccountListener> {
       BuildContext context, ActiveAccountState state) {
     debugPrint(
         '\nActive Account state changed and AuthActiveAccountListener listened.\n');
-    if (state is ActiveAccountInitial &&
+    if (state.activeAccount == null &&
         context.read<AuthenticationBloc>().state.isAuthenticated) {
       _navigateToAccountsListPage(context);
     }

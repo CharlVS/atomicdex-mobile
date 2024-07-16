@@ -5,23 +5,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:komodo_dex/common_widgets/app_logo.dart';
+import 'package:komodo_dex/generic_blocs/authenticate_bloc.dart';
+import 'package:komodo_dex/generic_blocs/main_bloc.dart';
+import 'package:komodo_dex/model/startup_provider.dart';
+import 'package:komodo_dex/model/updates_provider.dart';
 import 'package:komodo_dex/packages/accounts/bloc/active_account_bloc.dart';
-import 'package:komodo_dex/packages/accounts/models/account.dart';
 import 'package:komodo_dex/packages/authentication/bloc/authentication_bloc.dart';
+import 'package:komodo_dex/screens/authentification/create_password_page.dart';
+import 'package:komodo_dex/screens/settings/updates_page.dart';
+import 'package:komodo_dex/utils/log.dart';
+import 'package:komodo_dex/utils/utils.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../generic_blocs/authenticate_bloc.dart';
-import '../../generic_blocs/main_bloc.dart';
-import '../../model/startup_provider.dart';
-import '../../model/updates_provider.dart';
-import '../../model/wallet.dart';
-import '../../model/wallet_security_settings_provider.dart';
-import '../../utils/log.dart';
-import '../../utils/utils.dart';
-import '../authentification/create_password_page.dart';
-import '../settings/updates_page.dart';
 
 /// Protective layer: MyApp | LockScreen | MyHomePage.
 /// Also handles the application startup.
@@ -117,9 +114,8 @@ class _LockScreenState extends State<LockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authenticatedWallet =
-        context.select<AuthenticationBloc, LegacyWallet?>(
-            (bloc) => bloc.state.wallet?.toLegacy());
+    final authenticatedWallet = context
+        .select<AuthenticationBloc, KomodoWallet?>((bloc) => bloc.state.wallet);
 
     final accountBlocState = context.watch<ActiveAccountBloc>().state;
 

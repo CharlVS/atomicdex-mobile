@@ -38,15 +38,15 @@ class BlocManager {
 
   late final AuthenticationRepository? _authenticationRepository;
 
-  late final WalletsRepository _walletRepository;
+  final WalletsRepository _walletRepository = WalletsRepository();
 
   late final AccountRepository _accountRepository;
 
   late final ActiveAccountRepository _activeAccountRepository;
 
-  final AtomicDexApi _atomicDexApi = AtomicDexApi(
-    config: AtomicDexApiConfig(port: appConfig.rpcPort),
-  );
+  // final AtomicDexApi _atomicDexApi = AtomicDexApi(
+  //   config: AtomicDexApiConfig(port: appConfig.rpcPort),
+  // );
 
   //=====================================================================
 
@@ -81,13 +81,13 @@ class BlocManager {
       // Initialize async repositories which cannot be initialized in parallel
       _prefs = await SharedPreferences.getInstance();
 
-      final walletStorageApi = await WalletStorageApi.create();
+      // final walletStorageApi = await WalletStorageApi.create();
 
       _authenticationRepository = await AuthenticationRepository.instantiate(
         sqlDB: sqlDB,
         marketMakerService: MarketMakerService.instance,
-        walletStorageApi: walletStorageApi,
-        atomicDexApi: _atomicDexApi,
+        // walletStorageApi: walletStorageApi,
+        // atomicDexApi: _atomicDexApi,
       );
 
       // Initialize async repositories which can be initialized in parallel
@@ -98,11 +98,6 @@ class BlocManager {
           );
         }),
         CexPrices.init(),
-        Future(
-          () async => _walletRepository = await WalletsRepository.create(
-            walletStorageApi: walletStorageApi,
-          ),
-        ),
       ];
 
       await Future.wait(futures);
@@ -110,7 +105,7 @@ class BlocManager {
       _activeAccountRepository = ActiveAccountRepository(
         accountRepository: _accountRepository,
         authenticationRepository: _authenticationRepository!,
-        atomicDexApi: _atomicDexApi,
+        // atomicDexApi: _atomicDexApi,
       );
 
       // Initialize repositories which depend on other repositories

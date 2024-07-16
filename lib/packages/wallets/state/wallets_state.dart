@@ -1,17 +1,15 @@
 // Export all states and models which are used in the state classes. This file
 // acts as an 'index' for the state classes.
 
+import 'package:komodo_dex/packages/wallets/state/wallets_initial.dart';
+import 'package:komodo_dex/packages/wallets/state/wallets_load_failure.dart';
+import 'package:komodo_dex/packages/wallets/state/wallets_load_in_progress.dart';
+import 'package:komodo_dex/packages/wallets/state/wallets_load_success.dart';
+
 export 'wallets_initial.dart';
 export 'wallets_load_failure.dart';
-export 'wallets_load_success.dart';
 export 'wallets_load_in_progress.dart';
-
-import 'wallets_initial.dart';
-import 'wallets_load_failure.dart';
-import 'wallets_load_success.dart';
-import 'wallets_load_in_progress.dart';
-
-export 'package:komodo_dex/packages/accounts/models/account.dart';
+export 'wallets_load_success.dart';
 
 abstract class WalletsState {
   const WalletsState();

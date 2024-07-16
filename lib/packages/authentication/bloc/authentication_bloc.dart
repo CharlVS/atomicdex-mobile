@@ -9,9 +9,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 // import 'package:komodo_dex/atomicdex_api/atomicdex_api.dart';
 import 'package:komodo_dex/packages/authentication/bloc/authentication_state.dart';
 import 'package:komodo_dex/packages/authentication/repository/authentication_repository.dart';
-import 'package:komodo_dex/packages/authentication/repository/exceptions.dart';
-import 'package:komodo_dex/packages/wallets/models/wallet.dart';
 import 'package:komodo_dex/packages/wallets/repository/wallets_repository.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 export 'package:komodo_dex/packages/authentication/bloc/authentication_state.dart';
 
@@ -62,7 +61,7 @@ class AuthenticationBloc
     AuthenticationBiometricLoginRequested event,
     Emitter<AuthenticationState> emit,
   ) async {
-    Wallet? wallet;
+    KomodoWallet? wallet;
     emit(AuthenticationState.unauthenticated());
     try {
       final biometricsAvailable =

@@ -6,7 +6,7 @@ import '../generic_blocs/media_bloc.dart';
 import '../generic_blocs/settings_bloc.dart';
 import '../generic_blocs/wallet_bloc.dart';
 import '../model/balance.dart';
-import '../model/wallet.dart';
+import '../model/legacy_wallet.dart';
 import '../model/wallet_security_settings_provider.dart';
 import '../services/db/database.dart';
 import '../services/mm_service.dart';

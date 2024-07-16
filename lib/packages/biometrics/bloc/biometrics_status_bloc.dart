@@ -1,36 +1,40 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:komodo_dex/packages/biometrics/event/biometrics_status_event.dart';
-import 'package:komodo_dex/packages/biometrics/repository/biometrics_status_repository.dart';
 import 'package:komodo_dex/packages/biometrics/state/biometrics_status_state.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 // BiometricsStatusBloc
 class BiometricsStatusBloc
     extends HydratedBloc<BiometricsStatusEvent, BiometricsStatusState> {
-  final BiometricsStatusRepository _biometricsStatusRepository;
-
-  BiometricsStatusBloc(this._biometricsStatusRepository)
-      : super(BiometricsStatusInitial()) {
+  BiometricsStatusBloc() : super(BiometricsStatusInitial()) {
     on<BiometricsStatusSubscriptionRequested>(_handleStartSubscription);
   }
 
+  KomodoWalletSdk get _sdk => KomodoWalletSdk.instance;
+
   Future<void> _handleStartSubscription(
-      BiometricsStatusSubscriptionRequested event,
-      Emitter<BiometricsStatusState> emit) async {
+    BiometricsStatusSubscriptionRequested event,
+    Emitter<BiometricsStatusState> emit,
+  ) async {
     emit(BiometricsStatusInitial());
-    await emit.forEach(_biometricsStatusRepository.biometricsAvailableStream(),
-        onData: (status) {
-      if (status == BiometricsStatus.available) {
-        return BiometricsStatusAvailable();
-      } else if (status == BiometricsStatus.notEnrolled) {
-        return BiometricsNotEnrolled(message: 'Biometrics is not enrolled.');
-      } else if (status == BiometricsStatus.notAuthenticated) {
-        return BiometricsStatusNotAuthenticated(
-            message: 'Biometrics is not authenticated.');
-      } else {
-        return BiometricsStatusNotSupported(
-            message: 'Biometrics is not supported.');
-      }
-    });
+    await emit.forEach(
+      _sdk.biometrics.watchStatus(),
+      onData: (status) {
+        if (status == BiometricsStatus.available) {
+          return BiometricsStatusAvailable();
+        } else if (status == BiometricsStatus.notEnrolled) {
+          return BiometricsNotEnrolled(message: 'Biometrics is not enrolled.');
+        } else if (status == BiometricsStatus.notAuthenticated) {
+          return BiometricsStatusNotAuthenticated(
+            message: 'Biometrics is not authenticated.',
+          );
+        } else {
+          return BiometricsStatusNotSupported(
+            message: 'Biometrics is not supported.',
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -44,10 +48,12 @@ class BiometricsStatusBloc
       return BiometricsNotEnrolled(message: 'Biometrics is not enrolled.');
     } else if (status == 'notAuthenticated') {
       return BiometricsStatusNotAuthenticated(
-          message: 'Biometrics is not authenticated.');
+        message: 'Biometrics is not authenticated.',
+      );
     } else {
       return BiometricsStatusNotSupported(
-          message: 'Biometrics is not supported.');
+        message: 'Biometrics is not supported.',
+      );
     }
   }
 

@@ -16,6 +16,7 @@ import '../../../model/swap_constructor_provider.dart';
 import '../../../model/swap_provider.dart';
 import '../../../model/updates_provider.dart';
 import '../../../model/wallet_security_settings_provider.dart';
+import 'package:komodo_dex/generic_blocs/main_bloc.dart';
 
 class AppProviderManager extends StatelessWidget {
   const AppProviderManager({
@@ -32,6 +33,7 @@ class AppProviderManager extends StatelessWidget {
       child: MultiProvider(
         child: child,
         providers: [
+          ChangeNotifierProvider.value(value: mainBloc),
           ChangeNotifierProvider(
             create: (context) => SwapProvider(),
           ),

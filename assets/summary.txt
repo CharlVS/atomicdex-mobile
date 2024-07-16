@@ -1,0 +1,189 @@
+Checking field: coin
+Possible null values:
+0
+Possible enum values:
+Unique values:
+684
+-------
+Checking field: type
+Possible null values:
+0
+Possible enum values:
+Unique values:
+23
+-------
+Checking field: name
+Possible null values:
+0
+Possible enum values:
+Unique values:
+378
+-------
+Checking field: coinpaprika_id
+Possible null values:
+0
+Possible enum values:
+Unique values:
+304
+-------
+Checking field: coingecko_id
+Possible null values:
+0
+Possible enum values:
+Unique values:
+294
+-------
+Checking field: livecoinwatch_id
+Possible null values:
+0
+Possible enum values:
+Unique values:
+303
+-------
+Checking field: explorer_url
+Possible null values:
+0
+Possible enum values:
+Unique values:
+142
+-------
+Checking field: explorer_tx_url
+Possible null values:
+0
+Possible enum values:
+Unique values:
+8
+-------
+Checking field: explorer_address_url
+Possible null values:
+0
+Possible enum values:
+Unique values:
+7
+-------
+Checking field: supported
+Possible null values:
+0
+Possible enum values:
+Unique values:
+1
+-------
+Checking field: active
+Possible null values:
+0
+Possible enum values:
+Unique values:
+1
+-------
+Checking field: is_testnet
+Possible null values:
+0
+Possible enum values:
+Unique values:
+2
+-------
+Checking field: currently_enabled
+Possible null values:
+0
+Possible enum values:
+Unique values:
+1
+-------
+Checking field: wallet_only
+Possible null values:
+0
+Possible enum values:
+Unique values:
+2
+-------
+Checking field: fname
+Possible null values:
+0
+Possible enum values:
+Unique values:
+378
+-------
+Checking field: rpcport
+Possible null values:
+17
+Possible enum values:
+Unique values:
+107
+-------
+Checking field: mm2
+Possible null values:
+0
+Possible enum values:
+Unique values:
+1
+-------
+Checking field: chain_id
+Possible null values:
+173
+Possible enum values:
+Unique values:
+20
+-------
+Checking field: required_confirmations
+Possible null values:
+13
+Possible enum values:
+Unique values:
+13
+-------
+Checking field: avg_blocktime
+Possible null values:
+11
+Possible enum values:
+Unique values:
+31
+-------
+Checking field: decimals
+Possible null values:
+289
+Possible enum values:
+Unique values:
+8
+-------
+Checking field: protocol
+Possible null values:
+0
+Possible enum values:
+Unique values:
+530
+-------
+Checking field: derivation_path
+Possible null values:
+43
+Possible enum values:
+Unique values:
+71
+-------
+Checking field: contract_address
+Possible null values:
+174
+Possible enum values:
+Unique values:
+503
+-------
+Checking field: parent_coin
+Possible null values:
+163
+Possible enum values:
+Unique values:
+16
+-------
+Checking field: swap_contract_address
+Possible null values:
+153
+Possible enum values:
+Unique values:
+12
+-------
+Checking field: nodes
+Possible null values:
+171
+Possible enum values:
+Unique values:
+20
+-------

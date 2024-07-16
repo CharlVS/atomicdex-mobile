@@ -7,7 +7,7 @@ import 'package:komodo_dex/packages/wallets/events/wallets_quick_create_submitte
 // TODO: Migrate logic and state in this widget into a new bloc
 // (e.g. QuickCreateWalletBloc) or expand an existing bloc.
 class QuickCreateWalletButton extends StatefulWidget {
-  const QuickCreateWalletButton({Key? key}) : super(key: key);
+  const QuickCreateWalletButton({super.key});
 
   @override
   State<QuickCreateWalletButton> createState() =>
@@ -37,7 +37,7 @@ class _QuickCreateWalletButtonState extends State<QuickCreateWalletButton> {
               content: Text(
                   'A new wallet will be created with a generated seed phrase. '
                   'This seed phrase will be securely stored on your device. \n\n'
-                  'WARNING: If you change your device\'s biometric security '
+                  "WARNING: If you change your device's biometric security "
                   'settings, the seed phrase will be cleared and you will need'
                   ' to enter the seed to restore your wallet.' // TODO: Localize this string
                   // Example: Text(AppLocalizations.of(context)!.walletCreationWarning)

@@ -1,30 +1,25 @@
 import 'dart:async';
 
-import 'package:komodo_dex/atomicdex_api/atomicdex_api.dart'
-    hide Account; // TODO: Figure out how to structure so not needed
-import 'package:komodo_dex/packages/accounts/models/account.dart';
 import 'package:komodo_dex/packages/accounts/repository/account_repository.dart';
 import 'package:komodo_dex/packages/authentication/repository/authentication_repository.dart';
+import 'package:komodo_dex/services/mm_service.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 class ActiveAccountRepository {
   ActiveAccountRepository({
     required AccountRepository accountRepository,
     required AuthenticationRepository authenticationRepository,
-    // required WalletStorageApi walletStorageApi,
-    required AtomicDexApi atomicDexApi,
   })  : _accountRepository = accountRepository,
-        _authenticationRepository = authenticationRepository,
         // _walletStorageApi = walletStorageApi,
-        _atomicDexApi = atomicDexApi;
+        _authenticationRepository = authenticationRepository;
 
   final AccountRepository _accountRepository;
   final AuthenticationRepository _authenticationRepository;
   // final WalletStorageApi _walletStorageApi;
-  final AtomicDexApi _atomicDexApi;
 
   AccountId? _activeAccountId;
 
-  Stream<Account?> get activeAccountStream async* {
+  Stream<KomodoAccount?> get activeAccountStream async* {
     await for (final status in _authenticationRepository.status) {
       if (status == AuthenticationStatus.authenticated) {
         yield await tryGetActiveAccount();
@@ -51,8 +46,17 @@ class ActiveAccountRepository {
         throw Exception('Failed to get wallet passphrase.');
       }
 
-      await _atomicDexApi.startSession(
-          passphrase: passphrase, accountId: accountId);
+      // TODO: Implement below in new ADex server package
+      // await _atomicDexApi.startSession(
+      //     passphrase: passphrase, accountId: accountId);
+
+      final hdAccountId =
+          accountId is HDAccountId ? accountId.hdId.toString() : null;
+
+      await legacyStartSession(
+        passphrase: passphrase,
+        hdAccountId: hdAccountId,
+      );
 
       // TODO! Figure out which part of the pre-refactored code need to be
       // called to initialise them.
@@ -66,7 +70,7 @@ class ActiveAccountRepository {
     }
   }
 
-  Future<Account?> tryGetActiveAccount() async {
+  Future<KomodoAccount?> tryGetActiveAccount() async {
     final wallet = await _authenticationRepository.tryGetWallet();
     if (wallet != null && _activeAccountId != null) {
       return await _accountRepository.getAccount(accountId: _activeAccountId!);
@@ -77,7 +81,7 @@ class ActiveAccountRepository {
   Future<void> clearActiveAccount() async {
     _activeAccountId = null;
 
-    await _atomicDexApi.endSession();
+    // await _atomicDexApi.endSession();
 
     // TODO: Handle any other cleanup that needs to happen for legacy code.
   }
@@ -92,5 +96,40 @@ class ActiveAccountRepository {
       throw Exception('No active account set.');
     }
     return _activeAccountId!;
+  }
+}
+
+/// Start up and log in to the AtomicDex API.
+///
+/// Must be called before using the API.
+@Deprecated('Move to new ADex server package. This is a temporary solution.')
+Future<void> legacyStartSession({
+  required String passphrase,
+  required String? hdAccountId,
+}) async {
+  //TODO: Move this fun
+  final serverInstance = MarketMakerService.instance;
+  final _rpcPassword = serverInstance.generateRpcPassword();
+
+  if (serverInstance.running) {
+    await serverInstance.stopmm2();
+  }
+
+  await MarketMakerService.instance.init(
+    passphrase: passphrase,
+    rpcPassword: _rpcPassword,
+    hdAccountId: hdAccountId == null ? null : int.tryParse(hdAccountId),
+  );
+}
+
+@Deprecated('Move to new ADex server package. This is a temporary solution.')
+Future<void> legacyEndSession() async {
+  // TODO! Protection against logging out while sensitive operations are
+  // running.
+
+  final serverInstance = MarketMakerService.instance;
+
+  if (serverInstance.running) {
+    await serverInstance.stopmm2();
   }
 }

@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import '../services/mm_service.dart';
 import '../utils/utils.dart';
 
+// TODO: Refactor into new a new `komodo_logger` package or move to the new
+// `komodo_dex_server` package.
 class Log {
   /// Log the [message].
   /// The [key] points at the code line location

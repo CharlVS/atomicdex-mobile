@@ -2,8 +2,7 @@ import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:komodo_dex/atomicdex_api/src/models/account/account_id.dart';
-import 'package:komodo_dex/packages/wallets/state/wallets_state.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 abstract class AccountFormEvent extends Equatable {
   const AccountFormEvent();
@@ -13,7 +12,7 @@ abstract class AccountFormEvent extends Equatable {
 }
 
 class AccountFormStartedEvent extends AccountFormEvent {
-  AccountFormStartedEvent({required Account? account})
+  AccountFormStartedEvent({required KomodoAccount? account})
       : accountId = account?.accountId,
         name = account?.name,
         description = account?.description,

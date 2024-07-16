@@ -1,133 +1,26 @@
 import 'package:flutter/material.dart';
 import '../generic_blocs/settings_bloc.dart';
 
-SnackBarThemeData _snackBarTheme = const SnackBarThemeData(
-  behavior: SnackBarBehavior.floating,
-);
+const Color cexColor = Color.fromARGB(200, 253, 247, 227);
+const Color cexColorLight = Color.fromRGBO(24, 35, 49, 0.6);
 
-AppBarTheme get _appBarTheme => const AppBarTheme(
-      centerTitle: true,
-      elevation: 0,
-    );
+// Seed colors for dark theme
+Color primaryDark = Color(0xFF2A3647);
+Color secondaryDark = Color(0xFF39A1EE);
 
-InputDecorationTheme get _inputDecorationTheme => InputDecorationTheme(
-      border: OutlineInputBorder(),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: _colorScheme.secondary,
-        ),
-      ),
-      labelStyle: TextStyle(color: _colorScheme.secondary),
-    );
+// Seed colors for light theme
+Color primaryLight = const Color.fromRGBO(255, 255, 255, 1);
+Color secondaryLight = Color(0xFF3CC9BF);
 
-InputDecorationTheme get _inputDecorationThemeLight => InputDecorationTheme(
-      border: OutlineInputBorder(),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: _colorSchemeLight.secondary,
-        ),
-      ),
-      labelStyle: TextStyle(color: _colorSchemeLight.secondary),
-    );
+ColorScheme _defaultColorScheme(Brightness brightness) {
+  return brightness == Brightness.dark ? _colorSchemeDark : _colorSchemeLight;
+}
 
-DividerThemeData get _dividerThemeData => const DividerThemeData(
-      space: 1,
-      color: Color.fromRGBO(128, 128, 128, 1),
-    );
-
-TextSelectionThemeData get _textSelectionThemeData =>
-    const TextSelectionThemeData(
-      selectionColor: Color.fromRGBO(57, 161, 238, 0.3),
-      cursorColor: Color.fromRGBO(57, 161, 238, 1),
-      selectionHandleColor: Color.fromRGBO(57, 161, 238, 1),
-    );
-
-BottomNavigationBarThemeData get _bottomNavigationBarThemeData =>
-    BottomNavigationBarThemeData(
-      backgroundColor: _colorScheme.primary,
-      selectedItemColor: _colorScheme.secondary,
-    );
-BottomNavigationBarThemeData get _bottomNavigationBarThemeDataLight =>
-    BottomNavigationBarThemeData(
-      backgroundColor: _colorSchemeLight.surface,
-      selectedItemColor: _colorSchemeLight.secondary,
-    );
-
-ElevatedButtonThemeData get _elevatedButtonThemeData => ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        primary: _colorScheme.secondary,
-        onPrimary: _colorScheme.onSecondary,
-      ),
-    );
-ElevatedButtonThemeData get _elevatedButtonThemeDataLight =>
-    ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        primary: _colorSchemeLight.secondary,
-        onPrimary: _colorSchemeLight.onSecondary,
-      ),
-    );
-
-TextButtonThemeData get _textButtonThemeData => TextButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: _colorScheme.secondary,
-      ),
-    );
-TextButtonThemeData get _textButtonThemeDataLight => TextButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: _colorSchemeLight.secondary,
-      ),
-    );
-
-OutlinedButtonThemeData get _outlinedButtonThemeData => OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        primary: _colorScheme.secondary,
-        onSurface: _colorScheme.onSecondary,
-      ),
-    );
-
-OutlinedButtonThemeData get _outlinedButtonThemeDataLight =>
-    OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        primary: _colorSchemeLight.secondary,
-        onSurface: _colorSchemeLight.onSecondary,
-      ),
-    );
-
-ProgressIndicatorThemeData get _progressIndicatorThemeData =>
-    ProgressIndicatorThemeData(
-      color: _colorScheme.secondary,
-    );
-ProgressIndicatorThemeData get _progressIndicatorThemeDataLight =>
-    ProgressIndicatorThemeData(
-      color: _colorSchemeLight.secondary,
-    );
-
-SliderThemeData get _sliderThemeData => SliderThemeData(
-      inactiveTrackColor: _colorScheme.secondary.withOpacity(0.3),
-      activeTrackColor: _colorScheme.secondary,
-      activeTickMarkColor: _colorScheme.onSurface,
-      inactiveTickMarkColor: _colorScheme.secondary,
-      valueIndicatorTextStyle: TextStyle(color: _colorScheme.primary),
-      overlayColor: _colorScheme.secondary.withOpacity(0.2),
-      thumbColor: _colorScheme.secondary,
-    );
-
-SliderThemeData get _sliderThemeDataLight => SliderThemeData(
-      inactiveTrackColor: _colorSchemeLight.secondary.withOpacity(0.3),
-      activeTrackColor: _colorSchemeLight.secondary,
-      activeTickMarkColor: _colorSchemeLight.onSurface,
-      inactiveTickMarkColor: _colorSchemeLight.secondary,
-      valueIndicatorTextStyle: TextStyle(color: _colorSchemeLight.primary),
-      overlayColor: _colorSchemeLight.secondary.withOpacity(0.2),
-      thumbColor: _colorSchemeLight.secondary,
-    );
-
-// Color scheme dark adapted from current dev
-ColorScheme get _colorScheme => const ColorScheme(
+ColorScheme get _colorSchemeDark => const ColorScheme(
       primary: Color.fromRGBO(42, 54, 71, 1),
-      primaryVariant: Color.fromRGBO(28, 36, 48, 1),
+      primaryContainer: Color.fromRGBO(28, 36, 48, 1),
       secondary: Color.fromRGBO(57, 161, 238, 1),
-      secondaryVariant: Color.fromRGBO(57, 161, 238, 1),
+      secondaryContainer: Color.fromRGBO(57, 161, 238, 1),
       surface: Color.fromRGBO(42, 54, 71, 1),
       background: Color.fromRGBO(30, 42, 58, 1),
       error: Color.fromRGBO(202, 78, 61, 1),
@@ -142,9 +35,9 @@ ColorScheme get _colorScheme => const ColorScheme(
 // Color scheme light adapted from current dev
 ColorScheme get _colorSchemeLight => const ColorScheme(
       primary: Color.fromRGBO(255, 255, 255, 1),
-      primaryVariant: Color.fromRGBO(183, 187, 191, 1),
+      primaryContainer: Color.fromRGBO(183, 187, 191, 1),
       secondary: Color.fromRGBO(60, 201, 191, 1),
-      secondaryVariant: Color.fromRGBO(60, 201, 191, 1),
+      secondaryContainer: Color.fromRGBO(60, 201, 191, 1),
       surface: Color.fromRGBO(255, 255, 255, 1),
       background: Color.fromRGBO(245, 245, 245, 1),
       error: Color.fromRGBO(202, 78, 61, 1),
@@ -156,71 +49,52 @@ ColorScheme get _colorSchemeLight => const ColorScheme(
       brightness: Brightness.light,
     );
 
-// MRC: The properties of the themes have been greatly rectored so we can mostly
-// focus on colorScheme and on component themes
+ColorScheme _getColorScheme({
+  Color? color,
+  required Brightness brightness,
+}) {
+  ColorScheme colorScheme = color == null
+      ? ColorScheme.fromSwatch(
+          primarySwatch: Colors.blue,
+          brightness: brightness,
+        )
+      : ColorScheme.
+//
+          fromSeed(
+          seedColor: color,
+          brightness: brightness,
+          // primary: brightness == Brightness.dark ? primaryDark : primaryLight,
+        );
+  //   fromSwatch(
+  //   primarySwatch: Colors.cyan,
+  //   brightness: brightness,
+  // );
 
-ThemeData getThemeDark() => ThemeData(
-      fontFamily: 'Ubuntu',
-      colorScheme: _colorScheme,
-      primaryColor: _colorScheme.primary,
-      primaryColorDark: _colorScheme.primaryVariant,
-      toggleableActiveColor: _colorScheme.secondary,
-      cardColor: _colorScheme.surface,
-      scaffoldBackgroundColor: _colorScheme.background,
-      errorColor: _colorScheme.error,
-      brightness: _colorScheme.brightness,
-      hintColor: _colorScheme.onSurface.withOpacity(0.4),
-      dialogBackgroundColor: const Color.fromRGBO(42, 54, 71, 1),
-      disabledColor: const Color.fromRGBO(201, 201, 201, 1),
-      dividerColor: _dividerThemeData.color,
-      bottomAppBarColor: _colorScheme.primary,
-      snackBarTheme: _snackBarTheme,
-      appBarTheme: _appBarTheme,
-      inputDecorationTheme: _inputDecorationTheme,
-      dividerTheme: _dividerThemeData,
-      textSelectionTheme: _textSelectionThemeData,
-      bottomNavigationBarTheme: _bottomNavigationBarThemeData,
-      elevatedButtonTheme: _elevatedButtonThemeData,
-      textButtonTheme: _textButtonThemeData,
-      outlinedButtonTheme: _outlinedButtonThemeData,
-      progressIndicatorTheme: _progressIndicatorThemeData,
-      sliderTheme: _sliderThemeData,
-    );
+  return colorScheme;
+}
 
-ThemeData getThemeLight() => ThemeData(
-      fontFamily: 'Ubuntu',
-      colorScheme: _colorSchemeLight,
-      primaryColor: _colorSchemeLight.primary,
-      primaryColorDark: _colorSchemeLight.primaryVariant,
-      toggleableActiveColor: _colorSchemeLight.secondary,
-      cardColor: _colorSchemeLight.surface,
-      scaffoldBackgroundColor: _colorSchemeLight.background,
-      errorColor: _colorSchemeLight.error,
-      brightness: _colorSchemeLight.brightness,
-      hintColor: _colorSchemeLight.onSurface.withOpacity(0.7),
-      dialogBackgroundColor: const Color.fromRGBO(255, 255, 255, 1),
-      disabledColor: const Color.fromRGBO(201, 201, 201, 1),
-      dividerColor: _dividerThemeData.color,
-      bottomAppBarColor: _colorSchemeLight.surface,
-      snackBarTheme: _snackBarTheme,
-      appBarTheme: _appBarTheme,
-      inputDecorationTheme: _inputDecorationThemeLight,
-      dividerTheme: _dividerThemeData,
-      textSelectionTheme: _textSelectionThemeData,
-      bottomNavigationBarTheme: _bottomNavigationBarThemeDataLight,
-      elevatedButtonTheme: _elevatedButtonThemeDataLight,
-      textButtonTheme: _textButtonThemeDataLight,
-      outlinedButtonTheme: _outlinedButtonThemeDataLight,
-      progressIndicatorTheme: _progressIndicatorThemeDataLight,
-      sliderTheme: _sliderThemeDataLight,
-    );
+ThemeData getThemeDark({Color? seed}) {
+  final colorScheme = _getColorScheme(
+    color: seed,
+    brightness: Brightness.dark,
+  );
 
-const Color cexColor = Color.fromARGB(200, 253, 247, 227);
+  return ThemeData.dark(useMaterial3: true).copyWith(
+    // scaffoldBackgroundColor: colorScheme.background,
+    colorScheme: colorScheme,
+  );
+}
 
-const Color cexColorLight = Color.fromRGBO(24, 35, 49, 0.6);
+ThemeData getThemeLight({Color? seed}) {
+  final colorScheme = _getColorScheme(
+    color: seed,
+    brightness: Brightness.light,
+  );
+  return ThemeData.light(useMaterial3: true).copyWith(
+    colorScheme: colorScheme,
+  );
+}
 
-/// The SmallButton style for a ElevatedButton
-/// Replaces the old SmallButton widget
 ButtonStyle elevatedButtonSmallButtonStyle({EdgeInsets? padding}) =>
     ElevatedButton.styleFrom(
       elevation: 0,
@@ -229,8 +103,6 @@ ButtonStyle elevatedButtonSmallButtonStyle({EdgeInsets? padding}) =>
         borderRadius: BorderRadius.circular(30.0),
       ),
     );
-
-// Some variables to simplify the non-Outlined TextFields
 
 InputDecorationTheme defaultUnderlineInputTheme(ColorScheme colorScheme) {
   return InputDecorationTheme(
@@ -245,3 +117,71 @@ InputDecorationTheme defaultUnderlineInputTheme(ColorScheme colorScheme) {
     ),
   );
 }
+
+const lightColorScheme = ColorScheme(
+  brightness: Brightness.light,
+  primary: Color(0xFF1760A5),
+  onPrimary: Color(0xFFFFFFFF),
+  primaryContainer: Color(0xFFD3E3FF),
+  onPrimaryContainer: Color(0xFF001C38),
+  secondary: Color(0xFF006A64),
+  onSecondary: Color(0xFFFFFFFF),
+  secondaryContainer: Color(0xFF71F7EC),
+  onSecondaryContainer: Color(0xFF00201E),
+  tertiary: Color(0xFF0958C9),
+  onTertiary: Color(0xFFFFFFFF),
+  tertiaryContainer: Color(0xFFD9E2FF),
+  onTertiaryContainer: Color(0xFF001945),
+  error: Color(0xFFBA1A1A),
+  errorContainer: Color(0xFFFFDAD6),
+  onError: Color(0xFFFFFFFF),
+  onErrorContainer: Color(0xFF410002),
+  background: Color(0xFFFDFCFF),
+  onBackground: Color(0xFF1A1C1E),
+  surface: Color(0xFFFDFCFF),
+  onSurface: Color(0xFF1A1C1E),
+  surfaceVariant: Color(0xFFDFE2EB),
+  onSurfaceVariant: Color(0xFF43474E),
+  outline: Color(0xFF73777F),
+  onInverseSurface: Color(0xFFF1F0F4),
+  inverseSurface: Color(0xFF2F3033),
+  inversePrimary: Color(0xFFA3C9FF),
+  shadow: Color(0xFF000000),
+  surfaceTint: Color(0xFF1760A5),
+  outlineVariant: Color(0xFFC3C6CF),
+  scrim: Color(0xFF000000),
+);
+
+const darkColorScheme = ColorScheme(
+  brightness: Brightness.dark,
+  primary: Color(0xFFA3C9FF),
+  onPrimary: Color(0xFF00315C),
+  primaryContainer: Color(0xFF004882),
+  onPrimaryContainer: Color(0xFFD3E3FF),
+  secondary: Color(0xFF50DBD0),
+  onSecondary: Color(0xFF003734),
+  secondaryContainer: Color(0xFF00504B),
+  onSecondaryContainer: Color(0xFF71F7EC),
+  tertiary: Color(0xFFB0C6FF),
+  onTertiary: Color(0xFF002D6F),
+  tertiaryContainer: Color(0xFF00419C),
+  onTertiaryContainer: Color(0xFFD9E2FF),
+  error: Color(0xFFFFB4AB),
+  errorContainer: Color(0xFF93000A),
+  onError: Color(0xFF690005),
+  onErrorContainer: Color(0xFFFFDAD6),
+  background: Color(0xFF1A1C1E),
+  onBackground: Color(0xFFE3E2E6),
+  surface: Color(0xFF1A1C1E),
+  onSurface: Color(0xFFE3E2E6),
+  surfaceVariant: Color(0xFF43474E),
+  onSurfaceVariant: Color(0xFFC3C6CF),
+  outline: Color(0xFF8D9199),
+  onInverseSurface: Color(0xFF1A1C1E),
+  inverseSurface: Color(0xFFE3E2E6),
+  inversePrimary: Color(0xFF1760A5),
+  shadow: Color(0xFF000000),
+  surfaceTint: Color(0xFFA3C9FF),
+  outlineVariant: Color(0xFF43474E),
+  scrim: Color(0xFF000000),
+);

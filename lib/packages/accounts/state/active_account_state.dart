@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:komodo_dex/packages/accounts/models/account.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 /// [ActiveAccountState] is the base abstract class for all ActiveAccount states.
 ///
@@ -7,13 +7,13 @@ import 'package:komodo_dex/packages/accounts/models/account.dart';
 abstract class ActiveAccountState extends Equatable {
   const ActiveAccountState();
 
-  Account? get activeOrPendingAccount => this is ActiveAccountSuccess
+  KomodoAccount? get activeOrPendingAccount => this is ActiveAccountSuccess
       ? (this as ActiveAccountSuccess).account
       : this is ActiveAccountSwitchInProgress
           ? (this as ActiveAccountSwitchInProgress).account
           : null;
 
-  Account? get activeAccount => this is ActiveAccountSuccess
+  KomodoAccount? get activeAccount => this is ActiveAccountSuccess
       ? (this as ActiveAccountSuccess).account
       : null;
 
@@ -27,13 +27,15 @@ abstract class ActiveAccountState extends Equatable {
       case 'ActiveAccountInProgress':
         return ActiveAccountInProgress();
       case 'ActiveAccountSuccess':
-        return ActiveAccountSuccess(account: Account.fromJson(json['account']));
+        return ActiveAccountSuccess(
+          account: KomodoAccount.fromJson(json['account']),
+        );
       case 'ActiveAccountFailure':
         return ActiveAccountFailure(error: json['error']);
       case 'ActiveAccountSwitchInProgress':
         return ActiveAccountSwitchInProgress(
-          account: Account.fromJson(json['account']),
-          requestedAccount: Account.fromJson(json['requestedAccount']),
+          account: KomodoAccount.fromJson(json['account']),
+          requestedAccount: KomodoAccount.fromJson(json['requestedAccount']),
         );
       default:
         return ActiveAccountInitial();
@@ -85,9 +87,8 @@ class ActiveAccountInProgress extends ActiveAccountState {
 /// This state includes the current active [Account]. The UI should update to display
 /// the active account information and allow the user to interact with it.
 class ActiveAccountSuccess extends ActiveAccountState {
-  final Account account;
-
   const ActiveAccountSuccess({required this.account});
+  final KomodoAccount account;
 
   @override
   List<Object?> get props => [account];
@@ -105,11 +106,10 @@ class ActiveAccountSuccess extends ActiveAccountState {
 /// In this state, the UI should display an error message or provide a way for the user to
 /// retry the action.
 class ActiveAccountFailure extends ActiveAccountState {
+  const ActiveAccountFailure({required this.error, this.exception});
   final String error;
 
   final Exception? exception;
-
-  const ActiveAccountFailure({required this.error, this.exception});
 
   @override
   List<Object?> get props => [error, exception];
@@ -128,13 +128,13 @@ class ActiveAccountFailure extends ActiveAccountState {
 /// The UI should show a loading indicator or disable the relevant UI components to prevent
 /// user interaction until the switch is complete.
 class ActiveAccountSwitchInProgress extends ActiveAccountState {
-  final Account account;
-  final Account requestedAccount;
-
   const ActiveAccountSwitchInProgress({
     required this.account,
     required this.requestedAccount,
   });
+
+  final KomodoAccount account;
+  final KomodoAccount requestedAccount;
 
   @override
   List<Object?> get props => [account, requestedAccount];

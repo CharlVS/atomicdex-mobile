@@ -10,7 +10,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../generic_blocs/wallet_bloc.dart';
 import '../../model/article.dart';
 import '../../model/coin.dart';
-import '../../model/wallet.dart';
+import '../../model/legacy_wallet.dart';
 import '../../model/wallet_security_settings.dart';
 import '../../utils/iterable_utils.dart';
 import '../../utils/log.dart';

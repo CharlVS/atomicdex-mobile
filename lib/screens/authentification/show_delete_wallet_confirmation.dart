@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../generic_blocs/wallet_bloc.dart';
 import '../../localizations.dart';
-import '../../model/wallet.dart';
+import '../../model/legacy_wallet.dart';
 import '../../generic_blocs/dialog_bloc.dart';
 import '../../widgets/custom_simple_dialog.dart';
 

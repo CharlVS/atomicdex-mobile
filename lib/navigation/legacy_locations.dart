@@ -4,7 +4,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:komodo_dex/common_widgets/bottom_navbar_scaffold.dart';
 import 'package:komodo_dex/localizations.dart';
-import 'package:komodo_dex/packages/portfolio/pages/portfolio_home_page.dart';
+import 'package:komodo_dex/packages/portfolio/pages/portfolio_page.dart';
 import 'package:komodo_dex/screens/dex/dex_page.dart';
 import 'package:komodo_dex/screens/dex/orders/orders_page.dart';
 import 'package:komodo_dex/screens/feed/feed_page.dart';
@@ -23,7 +23,6 @@ import 'package:komodo_dex/screens/settings/setting_page.dart';
 class LegacyAppBarLocations extends BeamLocation<BeamState> {
   @override
   List<String> get pathPatterns => [
-        '/portfolio',
         '/dex',
         '/orders',
         '/markets',
@@ -31,7 +30,7 @@ class LegacyAppBarLocations extends BeamLocation<BeamState> {
         '/settings',
       ];
 
-  String portfolio() => '/portfolio';
+  String home() => '/home';
 
   String dex() => '/dex';
 
@@ -52,11 +51,11 @@ class LegacyAppBarLocations extends BeamLocation<BeamState> {
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     return [
       //
-      if (_isCurrentPathAny([portfolio(), dex()]))
+      if (_isCurrentPathAny([home(), dex()]))
         BeamPage(
           type: BeamPageType.noTransition,
           key: const ValueKey('beamer-portfolio-page'),
-          child: BottomNavbarScaffold(body: PortfolioHome()),
+          child: BottomNavbarScaffold(body: PortfolioPage()),
         ),
 
       //

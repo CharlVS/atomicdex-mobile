@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:komodo_dex/atomicdex_api/atomicdex_api.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 /// [ActiveAccountEvent] is the base class for all the events related to the ActiveAccount bloc.
 abstract class ActiveAccountEvent extends Equatable {

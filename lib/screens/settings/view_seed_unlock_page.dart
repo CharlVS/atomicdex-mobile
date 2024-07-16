@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../generic_blocs/wallet_bloc.dart';
 import '../../localizations.dart';
-import '../../model/wallet.dart';
+import '../../model/legacy_wallet.dart';
 import '../authentification/lock_screen.dart';
 import '../settings/view_private_keys.dart';
 import '../settings/view_seed.dart';

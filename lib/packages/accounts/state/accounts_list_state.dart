@@ -1,4 +1,4 @@
-import 'package:komodo_dex/packages/accounts/models/account.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 abstract class AccountsListState {}
 
@@ -7,7 +7,7 @@ class AccountsListInitial extends AccountsListState {}
 class AccountsListLoadInProgress extends AccountsListState {}
 
 class AccountsListLoadSuccess extends AccountsListState {
-  final List<Account> accounts;
+  final List<KomodoAccount> accounts;
 
   AccountsListLoadSuccess(this.accounts);
 }

@@ -76,7 +76,7 @@ packages:
     source: hosted
     version: "1.5.5"
   biometric_storage:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: biometric_storage
       sha256: f6d7f5f4c28323797658423e4c5982c9dee42e18f59a8a8d4bc5df38eaf2e2f1
@@ -152,10 +152,10 @@ packages:
     dependency: transitive
     description:
       name: build_runner_core
-      sha256: "30859c90e9ddaccc484f56303931f477b1f1ba2bab74aa32ed5d6ce15870f8cf"
+      sha256: "88a57f2ac99849362e73878334caa9f06ee25f31d2adced882b8337838c84e1e"
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.8"
+    version: "7.2.9"
   built_collection:
     dependency: transitive
     description:
@@ -205,7 +205,7 @@ packages:
     source: hosted
     version: "4.4.0"
   collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: collection
       sha256: "4a07be6cb69c84d677a6c3096fcf960cc3285a8330b4603e0d463d15d9bd934c"
@@ -389,6 +389,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  fl_chart:
+    dependency: "direct main"
+    description:
+      name: fl_chart
+      sha256: "48a1b69be9544e2b03d9a8e843affd89e43f3194c9248776222efcb4206bb1ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.62.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -601,10 +609,10 @@ packages:
     dependency: transitive
     description:
       name: graphs
-      sha256: "772db3d53d23361d4ffcf5a9bb091cf3ee9b22f2be52cd107cd7a2683a89ba0e"
+      sha256: aedc5a15e78fc65a6e23bcd927f24c64dd995062bcd1ca6eda65a3cff92a4d19
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.1"
   hex:
     dependency: transitive
     description:
@@ -699,7 +707,7 @@ packages:
     source: sdk
     version: "0.0.0"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       sha256: a3715e3bc90294e971cb7dc063fbf3cd9ee0ebf8604ffeafabd9e6f16abbdbe6
@@ -746,14 +754,26 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.7.0"
+  komodo_dex_client:
+    dependency: transitive
+    description:
+      path: "/Users/charl/Code/UTXO/komodo_dex_client"
+      relative: false
+    source: path
+    version: "1.0.0"
+  komodo_dex_server:
+    dependency: transitive
+    description:
+      path: "/Users/charl/Code/UTXO/komodo_dex_server"
+      relative: false
+    source: path
+    version: "0.0.1"
   komodo_wallet_sdk:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: ce0d0bb01955cdcb108a6f8b185ee009e1a822ce
-      url: "https://github.com/KomodoPlatform/komodo_wallet_sdk_flutter.git"
-    source: git
+      path: "/Users/charl/Code/UTXO/komodo_wallet_sdk"
+      relative: false
+    source: path
     version: "0.0.1"
   lints:
     dependency: transitive
@@ -807,10 +827,10 @@ packages:
     dependency: transitive
     description:
       name: logging
-      sha256: "04094f2eb032cbb06c6f6e8d3607edcfcb0455e2bb6cbc010cb01171dcb64e6d"
+      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "1.2.0"
   matcher:
     dependency: transitive
     description:
@@ -1279,10 +1299,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "1a5848f598acc5b7d8f7c18b8cb834ab667e59a13edc3c93e9d09cf38cc6bc87"
+      sha256: eed4e6a1164aa9794409325c3b707ff424d4d1c2a785e7db67f8bbda00e36e51
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.34"
+    version: "6.0.35"
   url_launcher_ios:
     dependency: transitive
     description:

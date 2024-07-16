@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:formz/formz.dart';
-import 'package:komodo_dex/atomicdex_api/atomicdex_api.dart';
 import 'package:komodo_dex/packages/accounts/models/account_description.dart';
 import 'package:komodo_dex/packages/accounts/models/account_name.dart';
+import 'package:komodo_wallet_sdk/komodo_wallet_sdk.dart';
 
 class AccountFormState extends Equatable with FormzMixin {
   const AccountFormState({
